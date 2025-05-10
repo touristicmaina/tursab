@@ -41,7 +41,12 @@
               "src/scss/styles.scss"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": [],
+            "allowedCommonJsDependencies": [
+              "sweetalert2",
+              "canvg",
+              "html2canvas",
+              "qrcode"
+            ],
             "stylePreprocessorOptions": {
               "sass": {
                 "silenceDeprecations": []
@@ -50,18 +55,28 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "6mb",
-                  "maximumError": "7mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
+              "optimization": {
+                "styles": true,   
+                "scripts": true  
+              },
+           "budgets": [
+  {
+    "type": "initial",
+    "maximumWarning": "5mb",
+    "maximumError": "10mb"
+  },
+  {
+    "type": "bundle",
+    "name": "main",
+    "maximumWarning": "6mb",
+    "maximumError": "8mb"
+  },
+  {
+    "type": "anyComponentStyle",
+    "maximumWarning": "200kb",  
+    "maximumError": "400kb"     
+  }
+],
               "outputHashing": "all"
             },
             "development": {
