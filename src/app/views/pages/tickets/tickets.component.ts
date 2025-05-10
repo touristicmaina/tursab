@@ -164,7 +164,7 @@ getAllServices() {
   this.servicesService.getAllServices().subscribe({
     next: (data) => {
       // Filter services where isActive is true
-      this.services = data.filter(service => service.isActive === true);
+      this.services = data.filter(service => service.isActive === "Yes");
     },
     error: (err) => {
       Swal.fire({

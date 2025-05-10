@@ -5,6 +5,6 @@ export interface ActivityModel{
     activityTotalIncome: number;
     activityTotalClients: number;
     activityTotalCommision: number;
-    isActive: boolean;
+    isActive: "Yes" | "No"; // true if the activity is available for booking
     createdAt: Date;
 }

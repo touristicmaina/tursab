@@ -22,7 +22,7 @@ export interface Activity {
         name: string;
         email: string;
     };
-    isActive: boolean; // true if the activity is available for booking
+    isActive: "Yes" | "No"; // true if the activity is available for booking
   
 
 }

@@ -70,7 +70,7 @@ export class ActivitieslistComponent {
     this.activityServiceForm = this.fb.group({
       activityName: ['', Validators.required],
       activityDescription: [''],
-      isActive: [true,Validators.required],
+      isActive: ["Yes",Validators.required],
     
 
     });
@@ -103,7 +103,7 @@ async loadActivity(activityId: string): Promise<void> {
      this.activityServiceForm.patchValue({
       activityName: activity.activityName || '',
       activityDescription: activity.activityDescription || '',
-      isActive: activity.isActive || '',
+      isActive: activity.isActive || "Yes",
 
      });
    }
