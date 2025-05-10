@@ -1,0 +1,79 @@
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button cButton class="me-md-2" color="secondary" (click)="toggleForm()">
+      {{ showForm ? 'Close Form' : 'Add Activity' }}
+    </button>
+   
+  </div>
+
+
+  <form *ngIf="showForm" [formGroup]="activityForm" (ngSubmit)="onSubmit()" class="row g-3">
+    <c-col md="6">
+      <label cLabel for="activityName">Activity Name</label>
+      <input cFormControl id="activityName" type="text" formControlName="name" placeholder="Name" />
+    </c-col>
+  
+    <c-col md="6">
+      <label cLabel for="description">Client Name</label>
+      <input cFormControl id="description" type="text" formControlName="description" placeholder="email" />
+    </c-col>
+  
+    <c-col md="6">
+      <label cLabel for="salePrice">Sale Price</label>
+      <input cFormControl id="salePrice" type="text" formControlName="salePrice" />
+    </c-col>
+  
+    <c-col xs="6">
+      <label cLabel for="commissionRate">Commission Rate</label>
+      <input cFormControl id="commissionRate" formControlName="commissionRate" placeholder="1234 Main St" />
+    </c-col>
+
+    <c-col md="6">
+      <label cLabel for="commissionAmount">commission Amount</label>
+      <div class="form-control" readonly>
+     A
+      </div>
+    </c-col>
+  
+    <c-col md="3">
+      <label cLabel for="costPriceTotal">cost Price Total</label>
+      <input cFormControl id="costPriceTotal" formControlName="costPriceTotal" />
+    </c-col>
+  
+  
+  
+    <c-col md="4">
+      <label cLabel for="costPriceAdult">Adults</label>
+      <input cFormControl id="costPriceAdult" type="number" formControlName="costPriceAdult"/>
+    </c-col>
+  
+    <c-col md="4">
+      <label cLabel for="costPriceChild">cost-Price Child</label>
+      <input cFormControl id="costPriceChild" type="number" formControlName="costPriceChild" />
+    </c-col>
+  
+    <c-col md="4">
+      <label cLabel for="costPriceBaby">Babies</label>
+      <input cFormControl id="costPriceBaby" type="number" formControlName="costPriceBaby" />
+    </c-col>
+  
+    <c-col md="3">
+      <label cLabel>Currency</label>
+      <c-dropdown class="d-block w-100">
+        <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
+          {{ selectedCurrency }}
+        </button>
+        <ul cDropdownMenu>
+          <li><a cDropdownItem (click)="selectCurrency('USD')">USD</a></li>
+          <li><a cDropdownItem (click)="selectCurrency('Euro')">Euro</a></li>
+        </ul>
+      </c-dropdown>
+    </c-col>
+  
+
+   
+  
+    <c-col xs="12">
+      <button cButton type="submit"> {{ mode === 'edit' ? 'Update Client' : 'Add Activity' }}</button>
+    </c-col>
+  </form>
+  

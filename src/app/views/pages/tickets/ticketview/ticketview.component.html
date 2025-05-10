@@ -1,0 +1,53 @@
+<div *ngIf="ticket" class="voucher-ticket">
+    <div class="header">
+      <div class="left">
+        <img src="assets/images/logoMain.png" alt="Touristic Mania Logo" class="logo" />
+      </div>
+      <div class="center">
+        <img src="assets/images/logo1.png" alt="TURSAB Logo" class="tursab" />
+        <div class="emergency" style="color: red;">7/24<br />EMERGENCY CALL<br /><strong>+90 531 353 1018</strong></div>
+      </div>
+      <div class="right">
+        <div class="voucher-no">№ <span>{{ ticket.ticketId }}</span></div>
+        <div><strong>TRIP</strong>: {{ ticket.activity.activityName }}</div>
+        <div><strong>DAY</strong>: {{ ticket.day }}</div>
+        <div><strong>DATE</strong>: {{ ticket.Date}}</div>
+      </div>
+    </div>
+  
+    <div class="body">
+      <div class="left-section">
+        <div><strong>NAME</strong>: {{ ticket.client.name }}</div>
+        <div><strong>HOTEL</strong>: {{ ticket.client.hotel }}</div>
+        <div><strong>ROOM NO</strong>: {{ ticket.client.roomNumber }}</div>
+        <div><strong>TIME</strong>: {{ getPickTime() }}</div>
+        <div><strong>PICK UP POINT</strong>: {{ ticket.pickupPoint }}</div>
+      </div>
+      <div class="right-section">
+        <div><strong>PAX</strong>: {{ getPaxTotal(ticket.client.pax) }}</div>
+        <div><strong>TOTAL PRICE</strong>: {{ ticket.salePrice }} {{ ticket.currency }}</div>
+        <div><strong>DEPOSIT</strong>: {{ticket.client.deposit}}</div>
+        <div><strong>BALANCE</strong>: {{ticket.client.balance}}</div>
+      </div>
+    </div>
+  
+    <div class="footer">
+      <div class="guide">
+        <strong>GUIDE</strong>: {{ ticket.client.guideName }}
+      </div>
+      <div class="phone">
+        <strong>PHONE NUMBER</strong>: {{ ticket.guide.guidePhone }}
+      </div>
+      <div class="note">
+        <p>
+          lşbu VOUCHER Tur operatörü tarafından kendi bünyesinde kontrol için hazırlanmıştır Hiçbir Mali  hüküm yoktur.
+        </p>
+        <p class="warning">Cancellations are not fully refundable</p>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="!ticket">
+    <p>Loading ticket...</p>
+  </div>
+  

@@ -1,0 +1,12 @@
+// Add application styles & imports to this file!
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.mat-datepicker-toggle {
+  .mat-icon-button {
+    background-color: red;
+  }
+}
+
+.mat-calendar {
+  background-color: lightgreen;
+}

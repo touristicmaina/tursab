@@ -1,0 +1,108 @@
+<c-col xs="12">
+  <c-card class="mb-4">
+    <c-card-header>
+      <strong>Clients</strong> <strong> List</strong>
+
+      <c-col md="3">
+        <input
+          cFormControl
+          [formControl]="searchControl"
+          placeholder="Search by name"
+          id="clientSearch"
+          name="clientSearch"
+        />
+      </c-col>
+    </c-card-header>
+    <c-card-body>
+      <table [striped]="true" cTable>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Hotel</th>
+            <th scope="col">RoomNo</th>
+            <th scope="col">status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(client of filteredClients;track client.clientId){
+          <tr>
+            <th scope="row">{{ client.clientId }}</th>
+            <td>{{ client.name }}</td>
+            <td>{{ client.hotel }}</td>
+            <td>{{ client.roomNumber }}</td>
+            <td>{{ client.isActive }}</td>
+
+            <td class="text-nowrap">
+              <button
+              class="btn btn-link text-danger p-0"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Delete"
+              (click)="confirmDelete(client)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            
+              <button
+                class="btn btn-link text-info p-0 ms-2"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Edit"
+                [routerLink]="['/dashboard/clients/edit', client.id]"
+
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </c-card-body>
+  </c-card>
+</c-col>
+
+<c-col xs="12">
+  <c-card class="mb-4">
+    <c-card-header>
+      <strong>Clients</strong> <strong> List</strong>
+      <c-col md="3">
+        <input
+          cFormControl
+          [formControl]="searchControl"
+          placeholder="Search by name"
+          id="clientSearchtwo"
+          name="clientSearch"
+        />
+      </c-col>
+    </c-card-header>
+    <c-card-body>
+      <table [striped]="true" cTable>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Pax</th>
+            <th scope="col">Total</th>
+            <th scope="col">Deposit</th>
+            <th scope="col">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(client of filteredClients;track client.clientId){
+          <tr>
+            <th scope="row">{{ client.clientId }}</th>
+            <td>{{ client.name }}</td>
+            <td>{{ client.pax.total }}</td>
+            <td>{{ client.totalPrice ? client.totalPrice : 0 }}</td>
+            <td>{{ client.deposit ? client.deposit : 0 }}</td>
+            <td>{{ client.balance ? client.balance : 0 }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </c-card-body>
+  </c-card>
+</c-col>

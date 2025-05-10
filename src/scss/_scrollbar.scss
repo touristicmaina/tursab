@@ -1,0 +1,39 @@
+// scrollbar tinkering
+
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #444 transparent;
+  }
+}
+
+//::-webkit-scrollbar {
+//  width: .7em;
+//  height: .7em;
+//}
+
+::-webkit-scrollbar-track {
+  background: var(--cui-body-bg, #fff);
+  border-radius: 100vw;
+  margin-block: .2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border: .15em solid var(--cui-body-bg, #fff);
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+.cdk-overlay-container {
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.mat-datepicker-content {
+  background-color: white; /* Ensure the calendar has a solid background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  border-radius: 4px; /* Optional: Add rounded corners */
+}

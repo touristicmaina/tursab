@@ -1,0 +1,6 @@
+#userAvatar[shape="circle"] {
+  width: 50px !important;        // Force the width to 40px
+  height: 50px !important;       // Force the height to 40px
+  border-radius: 50% !important; // Ensure it's circular
+  object-fit: cover !important;  // Ensure the image fits well inside the circle
+}

@@ -1,0 +1,122 @@
+<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="row g-3">
+
+  <!-- Activity Dropdown -->
+  <c-col md="6">
+    <label cLabel for="activity">Activity</label>
+    <select cFormControl id="activity" class="form-select" formControlName="activity">
+      <option *ngFor="let activity of services" [ngValue]="activity">
+        {{ activity.activityName }}
+      </option>
+    </select>
+  </c-col>
+
+  <!-- Client Dropdown -->
+  <c-col md="6">
+    <label cLabel for="client">Client Name</label>
+    <select cFormControl id="client" class="form-select" formControlName="client" searchable>
+
+
+
+      <option *ngFor="let client of clients" [ngValue]="client">
+        {{ client.name }}
+      </option>
+    </select>
+  </c-col>
+
+
+
+  <c-col md="6">
+    <label cLabel for="salePrice">Sale Price</label>
+    <input cFormControl id="salePrice" type="text" formControlName="salePrice" />
+  </c-col>
+
+  <c-col xs="6">
+    <label cLabel for="commissionRate">Commission Rate</label>
+    <input cFormControl id="commissionRate" type="text" formControlName="commissionRate" />
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="costPriceAdult">Adults</label>
+    <input cFormControl id="costPriceAdult" type="number" formControlName="costPriceAdult" />
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="costPriceChild">Cost-Price Child</label>
+    <input cFormControl id="costPriceChild" type="number" formControlName="costPriceChild" />
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="costPriceBaby">Babies</label>
+    <input cFormControl id="costPriceBaby" type="number" formControlName="costPriceBaby" />
+  </c-col>
+
+  <!-- Currency Dropdown – no form control to attach label to -->
+  <c-col md="3">
+    <span class="form-label d-block">Currency</span>
+    <c-dropdown class="d-block w-100">
+      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
+        {{ selectedCurrency }}
+      </button>
+      <ul cDropdownMenu>
+        <li>
+          <a cDropdownItem (click)="selectCurrency('USD')">USD</a>
+        </li>
+        <li>
+          <a cDropdownItem (click)="selectCurrency('Euro')">Euro</a>
+        </li>
+      </ul>
+    </c-dropdown>
+  </c-col>
+
+
+  <!-- Readonly Output - use <div> only, no form field association -->
+  <c-col md="3">
+    <h6 cLabel id="commissionAmountLabel">Commission Amount</h6>
+    <div class="form-control" role="textbox" aria-labelledby="commissionAmountLabel" tabindex="0">
+      {{ commissionAmount }}
+    </div>
+  </c-col>
+
+  <c-col md="3">
+    <h6 cLabel id="costPriceTotalLabel">Cost Price Total</h6>
+    <div class="form-control" role="textbox" aria-labelledby="costPriceTotalLabel" tabindex="0">
+      {{ totalPrice }}
+    </div>
+  </c-col>
+
+
+  <!-- Pickup Section -->
+  <c-col md="12">
+    <h6 cLabel>Pick Up</h6>
+  </c-col>
+
+  <c-col md="4">
+    <mat-form-field class="ml3" appearance="fill" >
+      <input matInput [matDatepicker]="picker" placeholder="Pick Up Date" formControlName="date" id="pickupDate" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+    </c-col>
+  
+
+  <c-col md="4">
+    <mat-form-field appearance="fill" backgroundColor="primary">
+      <input matInput formControlName="pickupTime" [matTimepicker]="timepicker" id="pickupTime" placeholder="Pick Up Time" />
+      <mat-timepicker-toggle matSuffix [for]="timepicker"></mat-timepicker-toggle>
+      <mat-timepicker #timepicker></mat-timepicker>
+    </mat-form-field>
+  </c-col>
+
+
+
+
+
+  <c-col md="4">
+    <label cLabel for="pickupPoint">Pick Up Location</label>
+    <input cFormControl id="pickupPoint" type="text" formControlName="pickupPoint" />
+  </c-col>
+
+  <c-col xs="12">
+    <button cButton type="submit"> {{ mode === 'edit' ? 'Update Ticket' : 'Add Ticket' }}</button>
+  </c-col>
+</form>

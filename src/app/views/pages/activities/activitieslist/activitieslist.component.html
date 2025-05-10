@@ -1,0 +1,102 @@
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button cButton class="me-md-2" color="secondary" (click)="toggleForm()">
+      {{ showForm ? 'Close Form' : 'Add Service' }}
+    </button>
+   
+  </div>
+
+
+  <form *ngIf="showForm" [formGroup]="activityServiceForm" (ngSubmit)="onSubmit()" class="row g-3  mb-4">
+    <c-col md="6">
+      <label cLabel for="activityName">Service Name</label>
+      <input cFormControl id="activityName" type="text" formControlName="activityName" placeholder="Name" />
+    </c-col>
+  
+    <c-col md="6">
+      <label cLabel for="activityDescription">Description</label>
+      <input cFormControl id="activityDescription" type="text" formControlName="activityDescription" placeholder="Description" />
+    </c-col>
+  
+    <c-col md="3">
+      <label cLabel for="isActive">Is Active</label>
+      <select cFormControl id="isActive" class="form-select" formControlName="isActive">
+        <option [value]="true">Yes</option>
+        <option [value]="false">No</option>
+      </select>
+    </c-col>
+
+   
+  
+    <c-col xs="12">
+      <button cButton type="submit"> {{ mode === 'edit' ? 'Update Service' : 'Add Service' }}</button>
+    </c-col>
+  </form>
+  
+
+ <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>Activities</strong> <strong> List</strong>
+  
+        <c-col md="3">
+          <input
+            cFormControl
+            [formControl]="searchControl"
+            placeholder="Search by name"
+            id="activitySearch"
+            name="activitySearch"
+          />
+        </c-col>
+      </c-card-header>
+      <c-card-body>
+        <table [striped]="true" cTable>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Income</th>
+              <th scope="col">Clients</th>
+              <th scope="col">Commision</th>
+              <th scope="col">Active</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(service of filteredServices;track service.activityserviceId){
+            <tr>
+              <th scope="row">{{ service.activityserviceId }}</th>
+              <td>{{ service.activityName }}</td>
+              <td>{{ service.activityTotalIncome }}</td>
+              <td>{{ service.activityTotalClients }}</td>
+              <td>{{ service.activityTotalCommision }}</td>
+              <td>{{ service.isActive}}</td>
+              <td class="text-nowrap">
+                <button
+                class="btn btn-link text-danger p-0"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="Delete"
+                (click)="confirmDelete(service)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+              
+                <button
+                  class="btn btn-link text-info p-0 ms-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Edit"
+                  [routerLink]="['/dashboard/activities-names-edit', service.activityserviceId]"
+  
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </c-card-body>
+    </c-card>
+  </c-col>
+

@@ -1,0 +1,99 @@
+<form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="row g-3">
+  <c-col md="6">
+    <label cLabel for="clientName">Name</label>
+    <input cFormControl id="clientName" type="text" formControlName="name" placeholder="Name" />
+  </c-col>
+
+  <c-col md="6">
+    <label cLabel for="clientEmail">Client Email</label>
+    <input cFormControl id="clientEmail" type="email" formControlName="email" placeholder="email" />
+  </c-col>
+
+  <c-col md="6">
+    <label cLabel for="clientPhone">Client Phone</label>
+    <input cFormControl id="clientPhone" type="tel" formControlName="phone" />
+  </c-col>
+
+  <c-col xs="6">
+    <label cLabel for="clientHotel">Hotel</label>
+    <input cFormControl id="clientHotel" formControlName="hotel" placeholder="1234 Main St" />
+  </c-col>
+
+  <c-col xs="6">
+    <label cLabel for="clientRoomNumber">Room Number</label>
+    <input cFormControl id="clientRoomNumber" type="number" formControlName="roomNumber" />
+  </c-col>
+
+  <c-col md="6">
+    <label cLabel for="clientPax">Pax</label>
+    <input id="clientPax" class="form-control" [value]="totalPax" readonly />
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="paxAdults">Adults</label>
+    <input cFormControl id="paxAdults" type="number" formControlName="adults"/>
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="paxChild">Children</label>
+    <input cFormControl id="paxChild" type="number" formControlName="children" />
+  </c-col>
+
+  <c-col md="4">
+    <label cLabel for="paxBabies">Babies</label>
+    <input cFormControl id="paxBabies" type="number" formControlName="babies" />
+  </c-col>
+
+  <c-col md="3">
+    <span class="form-label d-block">Currency</span>
+    <c-dropdown class="d-block w-100">
+      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
+        {{ selectedCurrency }}
+      </button>
+      <ul cDropdownMenu>
+        <li>
+          <a cDropdownItem (click)="selectCurrency('USD')">USD</a>
+        </li>
+        <li>
+          <a cDropdownItem (click)="selectCurrency('Euro')">Euro</a>
+        </li>
+      </ul>
+    </c-dropdown>
+  </c-col>
+  
+  <c-col md="3">
+    <span class="form-label d-block">Active</span>
+    <c-dropdown class="d-block w-100">
+      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
+        {{ selectedIsActive ? selectedIsActive : 'Select Status' }}
+      </button>
+      <ul cDropdownMenu>
+        <li>
+          <a cDropdownItem (click)="selectIsActive('Yes')">Yes</a>
+        </li>
+        <li>
+          <a cDropdownItem (click)="selectIsActive('No')">No</a>
+        </li>
+      </ul>
+    </c-dropdown>
+  </c-col>
+  
+  <c-col md="3">
+    <label cLabel for="totalP">Total price</label>
+    <input cFormControl id="totalP" type="number" formControlName="totalPrice" />
+  </c-col>
+
+  <c-col md="3">
+    <label cLabel for="deposit">Deposit</label>
+    <input cFormControl id="deposit" formControlName="deposit" />
+  </c-col>
+
+  <c-col md="3">
+    <label cLabel for="balance">Balance</label>
+    <input cFormControl id="balance" formControlName="balance" />
+  </c-col>
+
+  <c-col xs="12">
+    <button cButton type="submit">{{ mode === 'edit' ? 'Update Client' : 'Add Client' }}</button>
+  </c-col>
+</form>
