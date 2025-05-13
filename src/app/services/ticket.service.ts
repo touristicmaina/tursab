@@ -23,14 +23,14 @@ export class TicketServices{
       return index.toString().padStart(4, '0');
     }
   
-    async addTicket(data: Ticket) {
-        const user = await this.authService.getCurrentUser();
-        const ticketssCollection = collection(this.firestore, 'tickets');
-        const snapshot = await getDocs(ticketssCollection);
-        const count = snapshot.size;
-        const nextId = this.formatTicketId(count + 1);
+async addTicket(data: Ticket) {
+  const user = await this.authService.getCurrentUser();
+  const ticketssCollection = collection(this.firestore, 'tickets');
+  const snapshot = await getDocs(ticketssCollection);
+  const count = snapshot.size;
+  const nextId = this.formatTicketId(count + 1);
 
-    const clientId = data.client.clientId;
+  const clientId = data.client.clientId;
   const clientsCollection = collection(this.firestore, 'clients');
   const q = query(clientsCollection, where('clientId', '==', clientId));
   const clientSnapshot = await getDocs(q);
@@ -43,62 +43,74 @@ export class TicketServices{
   const clientDocId = clientDocSnap.id;
   const clientData = clientDocSnap.data() as Ticket['client'];
 
-  // 🧮 Update totalPrice
-  const updatedTotalPrice = (Number(clientData.totalPrice) || 0) + (Number(data.salePrice) || 0);
+  // 🔄 Sum existing tickets for this client
+  const ticketsCollection = collection(this.firestore, 'tickets');
+  const ticketsQuery = query(ticketsCollection, where('client.clientId', '==', clientDocId));
+  const ticketSnapshots = await getDocs(ticketsQuery);
+
+  let totalFromExistingTickets = 0;
+  ticketSnapshots.forEach(doc => {
+    const ticket = doc.data() as Ticket;
+    totalFromExistingTickets += Number(ticket.salePrice) || 0;
+  });
 
 
-  // ✏️ Update client document
-  const clientDocRef = doc(this.firestore, `clients/${clientDocId}`);
-  await updateDoc(clientDocRef, { totalPrice: updatedTotalPrice });
+
+  // 🧾 Create new ticket
+  const newTicket: Ticket = {
+    ...data,
+    ticketId: nextId,
+    activity: {
+      activityserviceId: data.activity.activityserviceId,
+      activityName: data.activity.activityName
+    },
+    client: {
+      name: data.client.name,
+      clientId: clientDocId, // Firestore document ID now stored
+      pax: data.client.pax,
+      hotel: data.client.hotel,
+      roomNumber: data.client.roomNumber,
+      deposit: data.client.deposit,
+      phone: await this.getUserPhone(clientDocId),
+      guideName: data.client.guideName,
+      currency: data.client.currency,
+    },
+    createdAt: new Date(),
+    createdBy: {
+      uid: user.uid,
+      name: user.displayName || '',
+      email: user.email || ''
+    },
+    updatedAt: new Date(),
+    updatedBy: {
+      uid: user.uid,
+      name: user.displayName || '',
+      email: user.email || ''
+    },
+    pickupPoint: data.pickupPoint,
+    pickupTime: data.pickupTime,
+    day: data.day,
+    Date: data.Date,
+    guide: {
+      guideId: user.uid,
+      guidePhone: await this.getUserPhone(user.uid)
+    },
+    salePrice: data.salePrice,
+    isActive: data.isActive !== undefined ? data.isActive : "Yes",
+    balance: data.balance !== undefined ? data.balance : "Unpaid",
+  };
+
+ const docRef = await addDoc(ticketssCollection, newTicket);
+   // Step 3: Update the newly added document to include its Firestore ID
+  await updateDoc(docRef, {
+    id: docRef.id
+  });
+
+   console.log('Client created with ID and saved in document field:', docRef.id);
+}
 
 
-        const newTicket: Ticket = {
-          ...data,
-          ticketId: nextId,
-          activity: {
-        activityserviceId: data.activity.activityserviceId            ,
-            activityName: data.activity.activityName
-          },
-          client: {
-            name: data.client.name,
-            clientId: data.client.clientId,
-            pax: data.client.pax,
-            hotel: data.client.hotel,
-            roomNumber: data.client.roomNumber,
-           totalPrice: updatedTotalPrice,
-            deposit: data.client.deposit,
-            balance: data.client.balance,
-            phone: await this.getUserPhone(data.client.clientId), // Fetch the phone number using the client ID
-            guideName: data.client.guideName,
-          },
-          createdAt: new Date(),
-          createdBy: {
-            uid: user.uid,
-            name: user.displayName || '',
-            email: user.email || ''
-          },
-         
-          updatedAt: new Date(),
-          updatedBy: {
-            uid: user.uid,
-            name: user.displayName || '',
-            email: user.email || ''
-          },
-          pickupPoint: data.pickupPoint,
-          pickupTime: data.pickupTime,
-          day: data.day,
-          Date: data.Date,
-          guide: {
-            guideId: user.uid,
-        
-            guidePhone: await this.getUserPhone(user.uid)
-          },
-          salePrice: data.salePrice,
-          currency: data.currency,
-        };
-    
-        return addDoc(ticketssCollection, newTicket);
-      }
+
       async getTickets(): Promise<Observable<Ticket[]>> {
         const user =  this.authService.getCurrentUser();
         
@@ -151,7 +163,7 @@ export class TicketServices{
   
     async getTicketById(ticketId: string): Promise<{ id: string } & Ticket | null> {
       const ticketCollection = collection(this.firestore, 'tickets');
-      const q = query(ticketCollection, where('ticketId', '==', ticketId));
+      const q = query(ticketCollection, where('id', '==', ticketId));
       const snapshot = await getDocs(q);
     
       if (!snapshot.empty) {
@@ -189,5 +201,34 @@ export class TicketServices{
         return null;
       }
     }
+
+async getTotalPrice(clientId: string): Promise<number> {
+  const user = await this.authService.getCurrentUser();
+
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  const ticketsCollection = collection(this.firestore, 'tickets');
+
+  // 🔍 Query tickets for the given client (by Firestore doc ID)
+  const q = query(
+    ticketsCollection,
+    where('client.clientId', '==', clientId),
+    where('createdBy.uid', '==', user.uid) ,// Optional: limit to current user's tickets
+    where('isActive', '==', 'Yes') // Optional: limit to active tickets
+  );
+
+  const snapshot = await getDocs(q);
+
+  let totalPrice = 0;
+  snapshot.forEach(doc => {
+    const ticket = doc.data() as Ticket;
+    totalPrice += Number(ticket.salePrice) || 0;
+  });
+
+  return totalPrice;
+}
+
     
 }

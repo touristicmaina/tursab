@@ -19,6 +19,7 @@ setLogLevel(LogLevel.VERBOSE);
 })
 export class TicketviewComponent {
   ticket: Ticket | null = null;
+  totalPrice: number=0;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -27,8 +28,7 @@ export class TicketviewComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log('TicketViewComponent initialized');
-    console.log('Route params:', this.route.snapshot.paramMap.get('id'));
+
     
     this.route.paramMap.subscribe((params) => {
       const ticketId = params.get('id');
@@ -36,7 +36,29 @@ export class TicketviewComponent {
         this.loadTicket(ticketId);
       }
     });
+
   }
+
+
+private async fetchTotalPrice(): Promise<void> {
+  const clientId = this.ticket?.client?.clientId;
+
+
+  if (!clientId) {
+    console.error('Missing client ID, cannot fetch total price.');
+    return;
+  }
+
+  try {
+    const totalPrice = await this.ticketService.getTotalPrice(clientId);
+    this.totalPrice = totalPrice ?? 0;
+    console.log('Total price fetched:', this.totalPrice);
+  } catch (error) {
+    console.error('Error fetching total price:', error);
+  }
+}
+
+  
 
   getPickTime(): string {
     if (!this.ticket?.pickupTime) return '';
@@ -67,6 +89,8 @@ export class TicketviewComponent {
       const ticket = await this.ticketService.getTicketByDocId(ticketId);
       if (ticket) {
         this.ticket = ticket;
+        this.fetchTotalPrice();
+     
       }
     } catch (err) {
       console.error('Error loading ticket:', err);

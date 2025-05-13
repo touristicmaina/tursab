@@ -24,9 +24,9 @@
       </div>
       <div class="right-section">
         <div><strong>PAX</strong>: {{ getPaxTotal(ticket.client.pax) }}</div>
-        <div><strong>TOTAL PRICE</strong>: {{ ticket.salePrice }} {{ ticket.currency }}</div>
+        <div><strong>TOTAL PRICE</strong>:{{ totalPrice }} {{ticket.client.currency}}</div>
         <div><strong>DEPOSIT</strong>: {{ticket.client.deposit}}</div>
-        <div><strong>BALANCE</strong>: {{ticket.client.balance}}</div>
+        <div><strong>BALANCE</strong>: {{ticket.balance}}</div>
       </div>
     </div>
   

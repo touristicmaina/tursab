@@ -24,47 +24,55 @@ export class ClientService {
   }
 
 
-  async addClient(data: NewClientData) {
-    const user = await this.authService.getCurrentUser();
-    const clientsCollection = collection(this.firestore, 'clients');
-    const snapshot = await getDocs(clientsCollection);
-    const count = snapshot.size;
-    const nextId = this.formatClientId(count + 1);
-  
-    const userDocRef = doc(this.firestore, 'users', user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-  
-    const guideName = userDocSnap.exists() ? userDocSnap.data()['displayName'] || '' : '';
-    const guidePhone = userDocSnap.exists() ? userDocSnap.data()['phone'] || '' : '';
-  
-    const { adults = 0, children = 0, babies = 0 } = data.pax;
-  
-    // Do not set 'id' yet — let Firestore create it
-    const newClientData: Omit<Client, 'id'> = {
-      ...data,
-      clientId: nextId,
-      pax: {
-        adults,
-        children,
-        babies,
-        total: adults + children + babies
-      },
-      createdAt: new Date(),
-      createdBy: {
-        uid: user.uid,
-        name: user.displayName || '',
-        email: user.email || ''
-      },
-      guideUid: user.uid,
-      guidePhone,
-      guideName,
-      isActive: data.isActive !== undefined ? data.isActive : "Yes",
-    };
-  
-    const docRef = await addDoc(clientsCollection, newClientData);
-    console.log('Client created with ID:', docRef.id);
-  }
-  
+async addClient(data: NewClientData) {
+  const user = await this.authService.getCurrentUser();
+  const clientsCollection = collection(this.firestore, 'clients');
+
+  const snapshot = await getDocs(clientsCollection);
+  const count = snapshot.size;
+  const nextId = this.formatClientId(count + 1);
+
+  const userDocRef = doc(this.firestore, 'users', user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+
+  const guideName = userDocSnap.exists() ? userDocSnap.data()['displayName'] || '' : '';
+  const guidePhone = userDocSnap.exists() ? userDocSnap.data()['phone'] || '' : '';
+
+  const { adults = 0, children = 0, babies = 0 } = data.pax;
+
+  // Step 1: Prepare the client data (without 'id')
+  const newClientData: Omit<Client, 'id'> = {
+    ...data,
+    clientId: nextId,
+    pax: {
+      adults,
+      children,
+      babies,
+      total: adults + children + babies
+    },
+    createdAt: new Date(),
+    createdBy: {
+      uid: user.uid,
+      name: user.displayName || '',
+      email: user.email || ''
+    },
+    guideUid: user.uid,
+    guidePhone,
+    guideName,
+    isActive: data.isActive !== undefined ? data.isActive : "Yes",
+  };
+
+  // Step 2: Add document (let Firestore assign ID)
+  const docRef = await addDoc(clientsCollection, newClientData);
+
+  // Step 3: Update the newly added document to include its Firestore ID
+  await updateDoc(docRef, {
+    id: docRef.id
+  });
+
+  console.log('Client created with ID and saved in document field:', docRef.id);
+}
+
 
   getClients(): Observable<Client[]> {
     const userPromise = this.authService.getCurrentUser();

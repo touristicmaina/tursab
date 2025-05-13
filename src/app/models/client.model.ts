@@ -12,9 +12,7 @@ export interface Client {
       babies: number;
       total: number; // auto calculated
     };
-    totalPrice: number;
     deposit: number;
-    balance: number;
     currency: 'USD' | 'Euro';
     guideUid: string; // from logged-in user
     guidePhone: string; // from user DB

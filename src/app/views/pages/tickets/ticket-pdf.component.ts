@@ -20,7 +20,7 @@ export class TicketPdfComponent implements AfterViewInit, OnChanges {
   @Input() ticket!: Ticket;
   @ViewChild('qrCodeCanvas', { static: false }) qrCodeCanvas!: ElementRef;
   ticketDocId!: string;  // Store the Firestore document ID
-
+  totalPrice: number=0;
   private viewInitialized = false;
 
   constructor(private cdr: ChangeDetectorRef, private ticketService: TicketServices) {}
@@ -29,6 +29,7 @@ export class TicketPdfComponent implements AfterViewInit, OnChanges {
     this.viewInitialized = true;
     this.tryGenerateQRCode();  // Make sure QR code generation happens after the view is initialized
     this.fetchTicketDoc();
+    this.fetchTotalPrice(); // Fetch total price when the view is initialized
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -46,6 +47,17 @@ export class TicketPdfComponent implements AfterViewInit, OnChanges {
       this.ticketDocId = docId;
       this.tryGenerateQRCode();
     }
+  }
+
+  private async fetchTotalPrice(): Promise<void> {
+   const clientId = this.ticket?.client?.clientId;
+   const totalPrice=await this.ticketService.getTotalPrice(clientId);
+    if (totalPrice) {
+      this.totalPrice = totalPrice;
+    } else {
+      console.error('Total price not found for client ID:', clientId);
+    }
+
   }
   
   private tryGenerateQRCode(): void {
@@ -90,7 +102,7 @@ export class TicketPdfComponent implements AfterViewInit, OnChanges {
     return new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true
+      hour12: false
     }).format(date);
   }
   

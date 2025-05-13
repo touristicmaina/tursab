@@ -72,7 +72,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 })
 export class TicketsComponent {
   ticketForm: FormGroup;
-  selectedCurrency = 'Currency';
+  selectedActive = '';
+  selectedBalance = '';
   mode: 'create' | 'edit' = 'create';
   ticketId: string | null = null;
   showForm = false;
@@ -103,8 +104,8 @@ export class TicketsComponent {
       pickupPoint: ['', Validators.required], 
       date: [null, Validators.required],       
       pickupTime: ['', Validators.required], 
-      isActive: [true, Validators.required],
-      currency: [''],
+      isActive: ['', Validators.required],
+      balance: ['', Validators.required],
 
     });    
     this.getAllServices();
@@ -115,6 +116,20 @@ toggleForm() {
   this.showForm = !this.showForm;
 }
 
+
+  ngOnInit(): void {
+     // Check if there's a route parameter (Subscriber ID)
+     this.route.paramMap.subscribe((params) => {
+      this.ticketId = params.get('id');
+  
+      if (this.ticketId) {
+        this.mode = 'edit'; // Set mode to 'edit' if SubscriberId exists
+        this.loadTicket(this.ticketId); // Load Subscribers data for editing
+      }
+    });
+
+
+  }
 
  async onSubmit(): Promise<void> {
     if (this.ticketForm.invalid) {
@@ -142,11 +157,27 @@ toggleForm() {
     try {
       if (this.mode === 'edit' && this.ticketId) {
         await this.ticketService.updateTickets(this.ticketId, ticket);
-        alert('Ticket updated successfully');
+           Swal.fire({
+          title: 'Success!',
+          text: 'Ticket Updated successfully',
+          icon: 'success',  
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+        
       } else {
         await this.ticketService.addTicket(ticket);
-
-        alert('Ticket added successfully');
+        Swal.fire({
+          title: 'Success!',
+          text: 'Ticket added successfully',
+          icon: 'success',  
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+        
+        // alert('Ticket added successfully');
       }
 
       this.router.navigate(['/dashboard/tickets-list']);
@@ -155,9 +186,14 @@ toggleForm() {
       alert('Operation failed.');
     }
   }
-selectCurrency(currency: string): void {
-  this.selectedCurrency = currency;
-  this.ticketForm.get('currency')?.setValue(currency);
+selectActive(active: string): void {
+  this.selectedActive = active;
+  this.ticketForm.get('isActive')?.setValue(active);
+}
+
+selectBalance(balance:string){
+  this.selectedBalance= balance;
+  this.ticketForm.get('balance')?.setValue(balance);
 }
 
 getAllServices() {
@@ -178,6 +214,85 @@ getAllServices() {
     }
   });
 }
+
+async loadTicket(ticketId: string): Promise<void> {
+  try {
+    const ticket = await this.ticketService.getTicketById(ticketId);
+    if (ticket) {
+      
+
+      // Find matching activity and client objects from list
+      const activityObj = this.services.find(service => service.activityName === ticket.activity.activityName);
+      const clientObj = this.clients.find(c => c.name === ticket.client.name);
+
+      this.ticketForm.patchValue({
+        activity: activityObj || null,
+        client: clientObj || null,
+        salePrice: ticket.salePrice || 0,
+        commissionRate: ticket.commissionRate || 0,
+        costPriceAdult: ticket.costPriceAdult || 0,
+        costPriceChild: ticket.costPriceChild || 0,
+        costPriceBaby: ticket.costPriceBaby || 0,
+        pickupPoint: ticket.pickupPoint || '',
+    date: typeof ticket.Date === 'string'
+  ? this.parseDate(ticket.Date)
+  : ticket.Date instanceof Date
+  ? ticket.Date
+  : null,
+
+      pickupTime: this.parseTimeToDate(ticket.pickupTime),
+
+        isActive: ticket.isActive || '',
+        balance: ticket.balance || ''
+      });
+
+      // Also update dropdown text display for Active and Balance
+      this.selectedActive = ticket.isActive;
+      this.selectedBalance = ticket.balance;
+    }
+  } catch (err) {
+    console.error('Error loading ticket:', err);
+    alert('Failed to load ticket data.');
+  }
+}
+
+
+parseDate(dateStr: string): Date | null {
+  const parts = dateStr.split('/');
+  if (parts.length === 3) {
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1; // Months are zero-based
+    const year = parseInt(parts[2], 10);
+    return new Date(year, month, day);
+  }
+  return null;
+}
+
+parseTimeToDate(timeInput: any): Date | null {
+  if (!timeInput) return null;
+
+  // If already a Date
+  if (timeInput instanceof Date) {
+    return timeInput;
+  }
+
+  // If Firestore Timestamp object
+  if (typeof timeInput === 'object' && 'seconds' in timeInput) {
+    return new Date(timeInput.seconds * 1000);
+  }
+
+  // If plain "HH:mm" string
+  if (typeof timeInput === 'string' && timeInput.includes(':')) {
+    const [hours, minutes] = timeInput.split(':').map(Number);
+    const now = new Date();
+    now.setHours(hours, minutes, 0, 0);
+    return now;
+  }
+
+  console.warn('Unexpected pickupTime format:', timeInput);
+  return null;
+}
+
 
 
    getAllClients() {
@@ -201,7 +316,9 @@ getAllServices() {
     get commissionAmount(): number {
       const commissionRate = this.ticketForm.get('commissionRate')?.value || 0;
       const totalPrice = this.totalPrice;
-      const commissionAmount = (totalPrice * commissionRate) / 100;
+      const salePrice = this.ticketForm.get('salePrice')?.value || 0;
+      const allPrices = salePrice-totalPrice;
+      const commissionAmount = (allPrices * commissionRate) / 100;
       return commissionAmount;
     }
     get totalPrice(): number {

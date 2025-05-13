@@ -25,7 +25,7 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="table-responsive">
           @for(client of filteredClients;track client.clientId){
           <tr>
             <th scope="row">{{ client.clientId }}</th>
@@ -78,7 +78,7 @@
         />
       </c-col>
     </c-card-header>
-    <c-card-body>
+    <c-card-body class="table-responsive">
       <table [striped]="true" cTable>
         <thead>
           <tr>
@@ -87,7 +87,7 @@
             <th scope="col">Pax</th>
             <th scope="col">Total</th>
             <th scope="col">Deposit</th>
-            <th scope="col">Balance</th>
+         
           </tr>
         </thead>
         <tbody>
@@ -96,9 +96,9 @@
             <th scope="row">{{ client.clientId }}</th>
             <td>{{ client.name }}</td>
             <td>{{ client.pax.total }}</td>
-            <td>{{ client.totalPrice ? client.totalPrice : 0 }}</td>
+            <td>{{ totalPrices[client.id] || 0 }}</td>
             <td>{{ client.deposit ? client.deposit : 0 }}</td>
-            <td>{{ client.balance ? client.balance : 0 }}</td>
+
           </tr>
           }
         </tbody>

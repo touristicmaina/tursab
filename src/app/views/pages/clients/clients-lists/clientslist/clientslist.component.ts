@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import Swal from 'sweetalert2';
 import {
   ColComponent, TextColorDirective,
@@ -11,8 +11,9 @@ import { Client } from '../../../../../models/client.model';
 import { ClientService } from '../../../../../services/clients.service';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { cilTrash, cilPencil } from '@coreui/icons';
-import { Router, RouterLink } from '@angular/router';
+import {RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { TicketServices } from '../../../../../services/ticket.service';
 @Component({
   selector: 'app-clientslist',
   standalone: true,
@@ -32,8 +33,14 @@ export class ClientslistComponent {
   searchControl = new FormControl('');
   clients: Client[] = [];
   filteredClients: Client[] = [];
+  totalPrice : number=0;
+  totalPrices: { [clientId: string]: number } = {};
 
-  constructor(private clientsServices: ClientService,private iconSet: IconSetService,private router: Router,) {
+  constructor(
+    private clientsServices: ClientService,
+    private iconSet: IconSetService,
+    private ticketServices: TicketServices,
+  ) {
     this.getAllClients();
     this.iconSet.icons = { cilTrash, cilPencil };
     // Trigger filtering whenever input changes
@@ -42,11 +49,18 @@ export class ClientslistComponent {
     });
   }
 
+
+  async getTotalPrice(clientId: string): Promise<number> {
+   const totalPrice =await this.ticketServices.getTotalPrice(clientId);
+    return totalPrice;
+  }
+
   getAllClients() {
     this.clientsServices.getClients().subscribe({
-      next: (data) => {
+      next: async (data) => {
         this.clients = data;
         this.filteredClients = [...data]; // Initial state
+        await this.loadTotalPrices();
       },
       error: (err) => {
         Swal.fire({
@@ -60,6 +74,15 @@ export class ClientslistComponent {
       }
     });
   }
+
+private async loadTotalPrices() {
+  for (const client of this.clients) {
+    if (client.clientId) {
+      this.totalPrices[client.id] = await this.ticketServices.getTotalPrice(client.id);
+      console.log(`Total price for client ${client.id}: ${this.totalPrices[client.id]}`);
+    }
+  }
+}
 
   filterClients(searchText: string) {
     const lowerText = searchText.toLowerCase();

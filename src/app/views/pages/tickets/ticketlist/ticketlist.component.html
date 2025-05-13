@@ -1,20 +1,31 @@
-<c-col xs="12">
-  <c-card class="mb-4">
-    <c-card-header>
-      <strong>Tickets</strong> <strong> List</strong>
+<c-col xs="12" class="table-responsive">
+<c-card class="mb-4">
+ <c-card-header>
+    <div class="mb-2">
+      <strong>Tickets</strong> <strong>List</strong>
+    </div>
 
-      <c-col md="3">
+    <div class="row align-items-center">
+      <div class="col-md-6">
         <input 
-        cFormControl 
-        [formControl]="searchControl" 
-        placeholder="Search by name"
-        id="ticketSearch"
-        name="ticketSearch"
+          cFormControl 
+          [formControl]="searchControl" 
+          placeholder="Search by name"
+          class="form-control"
+          id="ticketSearch"
+          name="ticketSearch"
         />
-      </c-col>
-    </c-card-header>
-    <c-card-body>
-      <table [striped]="true" cTable>
+      </div>
+
+      <div class="col-md-6 text-end">
+        <button class="btn btn-success" (click)="downloadExcel()">
+          Download Excel
+        </button>
+      </div>
+    </div>
+  </c-card-header>
+    <c-card-body class="table-responsive">
+      <table [striped]="true" cTable class="table-responsive">
         <thead>
           <tr>
             <th scope="col">ID</th>
@@ -22,6 +33,7 @@
             <th scope="col">Activity</th>
             <th scope="col">SalePrice</th>
             <th scope="col">Currency</th>
+            <th scope="col">Active</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -32,7 +44,8 @@
             <td>{{ ticket.client.name }}</td>
             <td>{{ ticket.activity.activityName }}</td>
             <td>{{ ticket.salePrice }}</td>
-            <td>{{ ticket.currency }}</td>
+            <td>{{ ticket.client.currency }}</td>
+              <td>{{ ticket.isActive }}</td>
 
             <td class="text-nowrap">
               <button class="btn btn-link text-danger p-0" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -41,7 +54,7 @@
               </button>
 
               <button class="btn btn-link text-info p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Edit" [routerLink]="['/ticket/edit', ticket.ticketId]">
+                title="Edit" [routerLink]="['/dashboard/tickets/edit', ticket.id]">
                 <mat-icon>edit</mat-icon>
               </button>
               <button class="btn btn-link text-success p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -55,24 +68,36 @@
         </tbody>
       </table>
     </c-card-body>
-  </c-card>
+ </c-card>
 </c-col>
 
-<c-col xs="12">
+<c-col xs="12" class="table-responsive">
   <c-card class="mb-4">
-    <c-card-header>
-      <strong>Tickets</strong> <strong> Commisions</strong>
-      <c-col md="3">
+  <c-card-header>
+    <div class="mb-2">
+      <strong>Tickets</strong> <strong>Commissions</strong>
+    </div>
+
+    <div class="row align-items-center">
+      <div class="col-md-6">
         <input 
-        cFormControl 
-        [formControl]="searchControl" 
-        placeholder="Search by name"
-        id="ticketSearchtwo"
-        name="ticketSearchtwo"
+          cFormControl 
+          [formControl]="searchControl" 
+          placeholder="Search by name"
+          class="form-control"
+          id="ticketSearch"
+          name="ticketSearch"
         />
-      </c-col>
-    </c-card-header>
-    <c-card-body>
+      </div>
+
+      <div class="col-md-6 text-end">
+        <button class="btn btn-success" (click)="downloadExcel()">
+          Download Excel
+        </button>
+      </div>
+    </div>
+  </c-card-header>
+    <c-card-body class="table-responsive">
       <table [striped]="true" cTable>
         <thead>
           <tr>
@@ -98,7 +123,7 @@
             <td>{{ ticket.costPriceChild ? ticket.costPriceChild : 0 }}</td>
             <td>{{ ticket.costPriceBaby ? ticket.costPriceBaby : 0 }}</td>
             <td>{{ ticket.commissionRate ? ticket.commissionRate : 0 }}</td>
-            <td>{{ ticket.commissionAmount ? ticket.commissionAmount : 0 }}</td>
+            <td>{{ ticket.commissionAmount ? ticket.commissionAmount : 0 }} {{ticket.client.currency}}</td>
 
           </tr>
           }

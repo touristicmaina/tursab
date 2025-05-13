@@ -7,7 +7,7 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { ClientService } from '../../../../../services/clients.service';
-import { Client, NewClientData } from '../../../../../models/client.model';
+import {  NewClientData } from '../../../../../models/client.model';
 import { CommonModule } from '@angular/common';
 import {
   DropdownToggleDirective,
@@ -64,7 +64,7 @@ export class CreatclientComponent implements OnInit {
       babies: [0, Validators.required],
       totalPrice: [0],
       deposit: [null],
-      balance: [null],
+      balance: [''],
       currency: [''],
       isActive: [''],
     });
@@ -96,9 +96,7 @@ export class CreatclientComponent implements OnInit {
           adults: client.pax?.adults ?? 0,
           children: client.pax?.children ?? 0,
           babies: client.pax?.babies ?? 0,
-          totalPrice: client.totalPrice || null,
           deposit: client.deposit || null,
-          balance: client.balance || null,
           currency: client.currency || '',
           isActive: client.isActive || '',
         });

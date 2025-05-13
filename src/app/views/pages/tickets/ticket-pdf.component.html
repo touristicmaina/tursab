@@ -7,7 +7,7 @@
     </div>
     <div class="center">
       <img src="assets/images/logo1.png" alt="TURSAB Logo" class="tursab" />
-      <div class="emergency">7/24<br />EMERGENCY CALL<br /><strong>+90 531 353 1018</strong></div>
+      <div class="emergency" style="color: red;">7/24<br />EMERGENCY CALL<br /><strong>+90 531 353 1018</strong></div>
     </div>
     <div class="right">
       <div class="voucher-no">№ <span>{{ ticket.ticketId }}</span></div>
@@ -27,9 +27,9 @@
     </div>
     <div class="right-section">
       <div><strong>PAX</strong>: {{ getPaxTotal(ticket.client.pax) }}</div>
-      <div><strong>TOTAL PRICE</strong>: {{ ticket.client.totalPrice }}</div>
+      <div><strong>TOTAL PRICE</strong>: {{ totalPrice }} {{ticket.client.currency}}</div>
       <div><strong>DEPOSIT</strong>: {{ticket.client.deposit}}</div>
-      <div><strong>BALANCE</strong>: {{ticket.client.balance}}</div>
+      <div><strong>BALANCE</strong>: {{ticket.balance}}</div>
     </div>
   </div>
 

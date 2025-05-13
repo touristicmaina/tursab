@@ -78,6 +78,13 @@ export const routes: Routes = [
         loadComponent:()=> TicketlistComponent,
         data: { title: 'Tickets List' }
       },
+
+      
+      {
+        path : 'dashboard/tickets/edit/:id',
+        loadComponent:()=> TicketsComponent,
+        data: { title: 'Tickets Edit' }
+      },
    
       {
         path: 'theme',

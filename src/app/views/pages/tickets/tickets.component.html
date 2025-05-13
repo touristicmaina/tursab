@@ -1,6 +1,8 @@
 <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="row g-3">
 
   <!-- Activity Dropdown -->
+
+  
   <c-col md="6">
     <label cLabel for="activity">Activity</label>
     <select cFormControl id="activity" class="form-select" formControlName="activity">
@@ -52,23 +54,40 @@
 
   <!-- Currency Dropdown – no form control to attach label to -->
   <c-col md="3">
-    <span class="form-label d-block">Currency</span>
+    <span class="form-label d-block">Active?</span>
     <c-dropdown class="d-block w-100">
       <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
-        {{ selectedCurrency }}
+        {{ selectedActive }}
       </button>
       <ul cDropdownMenu>
         <li>
-          <a cDropdownItem (click)="selectCurrency('USD')">USD</a>
+          <a cDropdownItem (click)="selectActive('Yes')">Yes</a>
         </li>
         <li>
-          <a cDropdownItem (click)="selectCurrency('Euro')">Euro</a>
+          <a cDropdownItem (click)="selectActive('No')">No</a>
         </li>
       </ul>
     </c-dropdown>
+ 
   </c-col>
 
-
+ <c-col md="3">
+    <span class="form-label d-block">Balance</span>
+    <c-dropdown class="d-block w-100">
+      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
+        {{ selectedBalance }}
+      </button>
+      <ul cDropdownMenu>
+        <li>
+          <a cDropdownItem (click)="selectBalance('paid')">Paid</a>
+        </li>
+        <li>
+          <a cDropdownItem (click)="selectBalance('unpaid')">UnPaid</a>
+        </li>
+      </ul>
+    </c-dropdown>
+ 
+  </c-col>
   <!-- Readonly Output - use <div> only, no form field association -->
   <c-col md="3">
     <h6 cLabel id="commissionAmountLabel">Commission Amount</h6>
@@ -91,7 +110,7 @@
   </c-col>
 
   <c-col md="4">
-    <mat-form-field class="ml3" appearance="fill" >
+    <mat-form-field class="ml3" appearance="fill" theme="dark" style="color: secondary;">
       <input matInput [matDatepicker]="picker" placeholder="Pick Up Date" formControlName="date" id="pickupDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
