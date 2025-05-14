@@ -26,7 +26,7 @@ export class TicketviewComponent {
     private ticketService: TicketServices,
     private route: ActivatedRoute
   ) {
-    this.fetchTotalPrice();
+
   }
 
   ngOnInit(): void {
@@ -36,6 +36,7 @@ export class TicketviewComponent {
       const ticketId = params.get('id');
       if (ticketId) {
         this.loadTicket(ticketId);
+        this.fetchTotalPrice();
       }
     });
 
@@ -90,8 +91,9 @@ private async fetchTotalPrice(): Promise<void> {
     try {
       const ticket = await this.ticketService.getTicketByDocId(ticketId);
       if (ticket) {
-         this.fetchTotalPrice();
         this.ticket = ticket;
+         this.fetchTotalPrice();
+
        
      
       }

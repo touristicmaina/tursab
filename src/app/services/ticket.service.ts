@@ -203,11 +203,11 @@ async addTicket(data: Ticket) {
     }
 
 async getTotalPrice(clientId: string): Promise<number> {
-  const user = await this.authService.getCurrentUser();
+  // const user = await this.authService.getCurrentUser();
 
-  if (!user) {
-    throw new Error('User not authenticated');
-  }
+  // if (!user) {
+  //   throw new Error('User not authenticated');
+  // }
 
   const ticketsCollection = collection(this.firestore, 'tickets');
 
@@ -215,7 +215,6 @@ async getTotalPrice(clientId: string): Promise<number> {
   const q = query(
     ticketsCollection,
     where('client.clientId', '==', clientId),
-    where('createdBy.uid', '==', user.uid) ,// Optional: limit to current user's tickets
     where('isActive', '==', 'Yes') // Optional: limit to active tickets
   );
 
