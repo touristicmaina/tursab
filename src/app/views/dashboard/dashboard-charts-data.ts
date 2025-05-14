@@ -22,7 +22,7 @@ export class DashboardChartsData {
     this.initMainChart();
   }
 
-  public mainChart: IChartProps = { type: 'line' };
+  public mainChart: IChartProps = { type: 'bar' };
 
   public random(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -150,7 +150,7 @@ export class DashboardChartsData {
       }
     };
 
-    this.mainChart.type = 'line';
+    this.mainChart.type = 'bar';
     this.mainChart.options = options;
     this.mainChart.data = {
       datasets,

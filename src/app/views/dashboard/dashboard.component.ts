@@ -1,5 +1,5 @@
 import { DOCUMENT, NgStyle } from '@angular/common';
-import { Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, WritableSignal } from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef , Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, ViewChild, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
 import {
@@ -17,123 +17,161 @@ import {
   ProgressComponent,
   RowComponent,
   TableDirective,
-  TextColorDirective
+  TextColorDirective,
+  WidgetStatBComponent,
+  WidgetStatFComponent,
+  TemplateIdDirective,
+  CardGroupComponent,
+  WidgetStatCComponent,
+  WidgetStatAComponent
 } from '@coreui/angular';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { IconDirective } from '@coreui/icons-angular';
-
+import {ClientService} from '../../services/clients.service'
 import { WidgetsBrandComponent } from '../widgets/widgets-brand/widgets-brand.component';
 import { WidgetsDropdownComponent } from '../widgets/widgets-dropdown/widgets-dropdown.component';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
+import {WidgetsComponent} from '../widgets/widgets/widgets.component';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart } from 'chart.js';
+import { DateTime } from 'luxon';
+Chart.register(ChartDataLabels);
 
-interface IUser {
-  name: string;
-  state: string;
-  registered: string;
-  country: string;
-  usage: number;
-  period: string;
-  payment: string;
-  activity: string;
-  avatar: string;
-  status: string;
-  color: string;
-}
 
 @Component({
     templateUrl: 'dashboard.component.html',
     styleUrls: ['dashboard.component.scss'],
-    imports: [WidgetsDropdownComponent, TextColorDirective, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressBarDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
+    imports: [
+      WidgetsComponent,
+      WidgetsDropdownComponent,
+      TextColorDirective,
+      CardComponent, CardBodyComponent, RowComponent,
+      ColComponent, ButtonDirective, IconDirective,
+      ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective,
+      ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective,
+      ProgressBarDirective, ProgressComponent, WidgetsBrandComponent,
+      CardHeaderComponent, TableDirective, AvatarComponent,
+      WidgetStatBComponent,
+  WidgetStatFComponent,
+  TemplateIdDirective,
+  CardGroupComponent,
+  WidgetStatCComponent,
+  WidgetStatAComponent
+  
+    ]
 })
 export class DashboardComponent implements OnInit {
+  clientData: any[] = [];
+  data: any[] = [];
+  options: any[] = [];
+  filteredClientData: any[] = [];
+clientsChartData: number[] = []; // This will go into chart
 
+   totalClients: number = 0;
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #document: Document = inject(DOCUMENT);
   readonly #renderer: Renderer2 = inject(Renderer2);
   readonly #chartsData: DashboardChartsData = inject(DashboardChartsData);
+ @ViewChild('chart') chartComponent!: ChartjsComponent;
 
-  public users: IUser[] = [
-    {
-      name: 'Yiorgos Avraamu',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Us',
-      usage: 50,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Mastercard',
-      activity: '10 sec ago',
-      avatar: './assets/images/avatars/1.jpg',
-      status: 'success',
-      color: 'success'
-    },
-    {
-      name: 'Avram Tarasios',
-      state: 'Recurring ',
-      registered: 'Jan 1, 2021',
-      country: 'Br',
-      usage: 10,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Visa',
-      activity: '5 minutes ago',
-      avatar: './assets/images/avatars/2.jpg',
-      status: 'danger',
-      color: 'info'
-    },
-    {
-      name: 'Quintin Ed',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'In',
-      usage: 74,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Stripe',
-      activity: '1 hour ago',
-      avatar: './assets/images/avatars/3.jpg',
-      status: 'warning',
-      color: 'warning'
-    },
-    {
-      name: 'Enéas Kwadwo',
-      state: 'Sleep',
-      registered: 'Jan 1, 2021',
-      country: 'Fr',
-      usage: 98,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Paypal',
-      activity: 'Last month',
-      avatar: './assets/images/avatars/4.jpg',
-      status: 'secondary',
-      color: 'danger'
-    },
-    {
-      name: 'Agapetus Tadeáš',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Es',
-      usage: 22,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'ApplePay',
-      activity: 'Last week',
-      avatar: './assets/images/avatars/5.jpg',
-      status: 'success',
-      color: 'primary'
-    },
-    {
-      name: 'Friderik Dávid',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Pl',
-      usage: 43,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Amex',
-      activity: 'Yesterday',
-      avatar: './assets/images/avatars/6.jpg',
-      status: 'info',
-      color: 'dark'
+  constructor(
+    private clientService: ClientService,
+  ) {
+  
+  }
+
+ async getAllClients() {
+  this.clientService.getClients().subscribe((data) => {
+    this.clientData = data;
+    this.totalClients = data.length;
+    
+    this.clientsChartData = this.generateClientChartData(this.clientData);
+    this.setClientWidgetChart(); // generate chart config
+  });
+}
+
+generateClientChartData(clients: any[]): number[] {
+  const monthlyCounts = new Array(12).fill(0);
+
+  clients.forEach(client => {
+    const dt = DateTime.fromFormat(client.createdAt, 'LLLL d, yyyy \'at\' h:mm:ss a ZZZ');
+    
+    if (dt.isValid) {
+      monthlyCounts[dt.month - 1]++;
+    } else {
+      console.warn('Invalid date:', client.createdAt);
     }
-  ];
+  });
 
-  public mainChart: IChartProps = { type: 'line' };
+  return monthlyCounts;
+}
+setClientWidgetChart() {
+  this.data[0] = {
+    labels: [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ],
+    datasets: [{
+      label: 'Clients Created',
+      data: this.clientsChartData,
+      backgroundColor: 'rgba(75,192,192,0.2)',
+      borderColor: '#36A2EB',
+      pointBackgroundColor: '#36A2EB',
+      pointHoverBorderColor: '#36A2EB',
+      fill: true,
+      tension: 0.4
+    }]
+  };
+
+ this.options[0] = {
+  plugins: {
+    legend: {
+      display: false
+    },
+    datalabels: {
+      anchor: 'end',
+      align: 'top',
+      color: '#333',
+      font: {
+        weight: 'bold'
+      },
+      formatter: (value: number) => value,
+    }
+  },
+  maintainAspectRatio: false,
+  onClick: (event: any, activeElements: any[]) => {
+    if (activeElements.length > 0) {
+      const chart = activeElements[0]._chart;
+      const index = activeElements[0].index;
+      const label = this.data[0].labels[index];
+      this.onMonthClick(index, label);
+    }
+  },
+  scales: {
+    x: {
+      ticks: { display: false },
+      grid: { display: false }
+    },
+    y: {
+      ticks: { display: false },
+      grid: { display: false }
+    }
+  }
+};
+
+}
+
+onMonthClick(monthIndex: number, label: string) {
+  const clientsInMonth = this.clientData.filter(client => {
+    const createdAt = new Date(client.createdAt);
+    return createdAt.getMonth() === monthIndex;
+  });
+
+  console.log(`Clients in ${label}:`, clientsInMonth);
+  this.filteredClientData = clientsInMonth;
+}
+
+  public mainChart: IChartProps = { type: 'bar' };
   public mainChartRef: WritableSignal<any> = signal(undefined);
   #mainChartRefEffect = effect(() => {
     if (this.mainChartRef()) {
@@ -148,6 +186,13 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.initCharts();
     this.updateChartOnColorModeChange();
+    this.getAllClients();
+    console.log('this.clientData', this.clientData);
+    console.log('this.clientsChartData', this.clientsChartData);
+    console.log('this.data', this.data);
+    console.log('this.options', this.options);
+    console.log('this.filteredClientData', this.filteredClientData);
+    console.log('this.totalClients', this.totalClients);
   }
 
   initCharts(): void {
