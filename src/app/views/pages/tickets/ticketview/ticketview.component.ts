@@ -25,7 +25,9 @@ export class TicketviewComponent {
     private cdr: ChangeDetectorRef,
     private ticketService: TicketServices,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.fetchTotalPrice();
+  }
 
   ngOnInit(): void {
 
