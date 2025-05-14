@@ -90,8 +90,9 @@ private async fetchTotalPrice(): Promise<void> {
     try {
       const ticket = await this.ticketService.getTicketByDocId(ticketId);
       if (ticket) {
+         this.fetchTotalPrice();
         this.ticket = ticket;
-        this.fetchTotalPrice();
+       
      
       }
     } catch (err) {

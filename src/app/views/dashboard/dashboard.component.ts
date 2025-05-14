@@ -1,5 +1,5 @@
 import { DOCUMENT, NgStyle } from '@angular/common';
-import {AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef , Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, ViewChild, WritableSignal } from '@angular/core';
+import {Component, DestroyRef, effect, inject, OnInit, Renderer2, signal, ViewChild, WritableSignal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ChartOptions } from 'chart.js';
 import {
@@ -9,19 +9,14 @@ import {
   CardBodyComponent,
   CardComponent,
   CardFooterComponent,
-  CardHeaderComponent,
   ColComponent,
   FormCheckLabelDirective,
   GutterDirective,
   ProgressBarDirective,
   ProgressComponent,
   RowComponent,
-  TableDirective,
   TextColorDirective,
-  WidgetStatBComponent,
-  WidgetStatFComponent,
   TemplateIdDirective,
-  CardGroupComponent,
   WidgetStatCComponent,
   WidgetStatAComponent
 } from '@coreui/angular';
@@ -42,19 +37,15 @@ Chart.register(ChartDataLabels);
     templateUrl: 'dashboard.component.html',
     styleUrls: ['dashboard.component.scss'],
     imports: [
-      WidgetsComponent,
+      
       WidgetsDropdownComponent,
       TextColorDirective,
       CardComponent, CardBodyComponent, RowComponent,
       ColComponent, ButtonDirective, IconDirective,
       ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective,
       ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective,
-      ProgressBarDirective, ProgressComponent, WidgetsBrandComponent,
-      CardHeaderComponent, TableDirective, AvatarComponent,
-      WidgetStatBComponent,
-  WidgetStatFComponent,
+      ProgressBarDirective, ProgressComponent,
   TemplateIdDirective,
-  CardGroupComponent,
   WidgetStatCComponent,
   WidgetStatAComponent
   
