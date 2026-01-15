@@ -1,40 +1,169 @@
-import { query, where } from 'firebase/firestore';
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
-  getDocs,
   addDoc,
+  getDocs,
+  query,
+  where,
   doc,
-  updateDoc,
-  deleteDoc,
   getDoc
 } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
+import { Ticket, Currency, PaymentStatus } from '../models/ticket.model';
 import { collectionData } from '@angular/fire/firestore';
-import { Injectable } from '@angular/core';
-import { Ticket } from '../models/ticket.model';
+import { Observable } from 'rxjs';
+
+/* أسعار التحويل */
+const EXCHANGE_RATES: Record<Currency, number> = {
+  USD: 1,
+  EUR: 0.92,
+  GBP: 0.79,
+  TRY: 32
+};
 
 @Injectable({ providedIn: 'root' })
-export class TicketServices{
-    constructor(private firestore: Firestore, private authService: AuthService) {}
+export class TicketService {
 
-    private formatTicketId(index: number): string {
-      return index.toString().padStart(4, '0');
-    }
-  
-async addTicket(data: Ticket) {
-  const user = await this.authService.getCurrentUser();
-  const ticketssCollection = collection(this.firestore, 'tickets');
-  const snapshot = await getDocs(ticketssCollection);
-  const count = snapshot.size;
-  const nextId = this.formatTicketId(count + 1);
+  constructor(
+    private firestore: Firestore,
+    private authService: AuthService
+  ) {}
 
-  const clientId = data.client.clientId;
-  const clientsCollection = collection(this.firestore, 'clients');
-  const q = query(clientsCollection, where('clientId', '==', clientId));
-  const clientSnapshot = await getDocs(q);
+  /* توليد رقم تيكت */
+  private formatTicketId(index: number): string {
+    return index.toString().padStart(5, '0');
+  }
 
+  /* حساب السعر النهائي */
+  private calculateFinalPrice(
+    basePriceUSD: number,
+    pax: number,
+    currency: Currency
+  ): number {
+    const totalUSD = basePriceUSD * pax;
+    return +(totalUSD * EXCHANGE_RATES[currency]).toFixed(2);
+  }
+
+  /* إنشاء تيكت جديد */
+  async createTicket(data: {
+    clientName: string;
+    hotel: string;
+    pax: number;
+    activityName: string;
+    basePriceUSD: number;
+    currency: Currency;
+    paymentStatus: PaymentStatus;
+    restAmount?: number;
+    restCurrency?: Currency;
+  }) {
+
+    const user = await this.authService.getCurrentUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const ticketsCollection = collection(this.firestore, 'tickets');
+    const snapshot = await getDocs(ticketsCollection);
+    const ticketId = this.formatTicketId(snapshot.size + 1);
+
+    const finalAmount = this.calculateFinalPrice(
+      data.basePriceUSD,
+      data.pax,
+      data.currency
+    );
+
+    const ticket: Ticket = {
+      ticketId,
+      client: {
+        name: data.clientName,
+        hotel: data.hotel,
+        pax: data.pax
+      },
+      activity: {
+        name: data.activityName,
+        basePriceUSD: data.basePriceUSD
+      },
+      finalPrice: {
+        amount: finalAmount,
+        currency: data.currency
+      },
+      payment: {
+        status: data.paymentStatus,
+        restAmount: data.paymentStatus === 'Rest' ? data.restAmount : undefined,
+        restCurrency: data.paymentStatus === 'Rest' ? data.restCurrency : undefined
+      },
+      createdAt: new Date(),
+      createdBy: {
+        uid: user.uid,
+        name: user.displayName || '',
+        email: user.email || ''
+      }
+    };
+
+    const docRef = await addDoc(ticketsCollection, ticket);
+
+    await addDoc(collection(this.firestore, 'ticket_logs'), {
+      ticketId: docRef.id,
+      action: 'CREATED',
+      createdAt: new Date(),
+      userId: user.uid
+    });
+  }
+
+  /* جلب كل التذاكر للمستخدم */
+  async getTickets(): Promise<Observable<Ticket[]>> {
+    const user = await this.authService.getCurrentUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const q = query(
+      collection(this.firestore, 'tickets'),
+      where('createdBy.uid', '==', user.uid)
+    );
+
+    return collectionData(q, { idField: 'id' }) as Observable<Ticket[]>;
+  }
+
+  /* جلب تيكت بواسطة ID */
+  async getTicketById(ticketId: string): Promise<Ticket | null> {
+    const q = query(
+      collection(this.firestore, 'tickets'),
+      where('ticketId', '==', ticketId)
+    );
+
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return null;
+
+    return snapshot.docs[0].data() as Ticket;
+  }
+
+  /* إحصائيات (للتقارير لاحقًا) */
+  async getSalesStats(from: Date, to: Date) {
+    const q = query(
+      collection(this.firestore, 'tickets'),
+      where('createdAt', '>=', from),
+      where('createdAt', '<=', to)
+    );
+
+    const snapshot = await getDocs(q);
+
+    let totalSales = 0;
+    let totalRest = 0;
+
+    snapshot.forEach(doc => {
+      const ticket = doc.data() as Ticket;
+      totalSales += ticket.finalPrice.amount;
+
+      if (ticket.payment.status === 'Rest') {
+        totalRest += ticket.payment.restAmount || 0;
+      }
+    });
+
+    return {
+      totalSales,
+      totalRest,
+      count: snapshot.size
+    };
+  }
+}
   if (clientSnapshot.empty) {
     throw new Error(`Client with ID ${clientId} not found`);
   }
