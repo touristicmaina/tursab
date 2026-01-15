@@ -1,31 +1,35 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <base href="./">
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
-  <meta content="Tourist Mania" name="description" />
-  <meta content="Clickers Software" name="author" />
-  <meta
-    content="Tourist Mania"
-    name="keyword"
-  />
-  <link href="assets/favicon.ico" rel="icon" type="image/x-icon">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Touristic Mania – Tourist Activities Booking System">
+  <meta name="author" content="Clickers Software">
+  <meta name="keywords" content="tourism, tickets, activities, booking">
+  <meta name="theme-color" content="#0d6efd">
+
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
   <title>Tourist Mania</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+
 <body class="mat-typography">
-<noscript>You need to enable JavaScript to run this app.</noscript>
-<app-root>
-  <div class="fade show" style="text-align: center; padding-top: calc(100vh / 2); height: 100vh">
-    <i class="spinner-grow spinner-grow-sm"></i>
-    <button cButton class="m-1" disabled>
-      <c-spinner aria-hidden="true" size="sm" style="align-items: center; top: 50%;"></c-spinner>
-      Loading...
-    </button>
-  </div>
-</app-root>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+
+  <app-root>
+    <div class="fade show d-flex justify-content-center align-items-center" style="height: 100vh;">
+      <button cButton disabled>
+        <c-spinner size="sm"></c-spinner>
+        Loading...
+      </button>
+    </div>
+  </app-root>
 </body>
 </html>
