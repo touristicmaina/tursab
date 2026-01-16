@@ -1,7 +1,7 @@
 import { ActivitiesComponent } from './views/pages/activities/activities/activities.component';
 import { ActivitieslistComponent } from './views/pages/activities/activitieslist/activitieslist.component';
 import { ActivityanalysisComponent } from './views/pages/activities/activityanalysis/activityanalysis.component';
-import {TicketsComponent} from './views/pages/tickets/tickets.component'
+import {TicketComponent} from './views/pages/tickets/tickets.component'
 import {TicketlistComponent} from './views/pages/tickets/ticketlist/ticketlist.component'
 
 import { Routes } from '@angular/router';
