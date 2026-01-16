@@ -45,19 +45,4 @@ export interface Ticket {
   };
 
   createdAt: Date;
-}    updatedAt: Date;
-    updatedBy: {
-        uid: string; // from logged-in user
-        name: string;
-        email: string;
-    };
-   pickupPoint: string;
-   pickupTime: string;
-   guide: {
-        guideId: string;
-        guidePhone: string;
-   }
-  
-  balance: 'Paid' | 'Unpaid';
-  isActive: 'Yes' | 'No';
-}
+}}
