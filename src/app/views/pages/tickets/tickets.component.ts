@@ -34,6 +34,9 @@ export class TicketComponent implements OnInit {
     this.listenCalculations();
   }
 
+  // ------------------------
+  // FORM
+  // ------------------------
   buildForm(): void {
     this.ticketForm = this.fb.group({
       activity: [null, Validators.required],
@@ -52,16 +55,24 @@ export class TicketComponent implements OnInit {
     });
   }
 
+  // ------------------------
+  // LOAD DATA  ✅ (مصلح)
+  // ------------------------
   loadData(): void {
-    this.ticketService.getActivities().subscribe(data => {
+
+    this.ticketService.getActivities().subscribe((data: any[]) => {
       this.services = data;
     });
 
-    this.ticketService.getClients().subscribe(data => {
+    this.ticketService.getClients().subscribe((data: any[]) => {
       this.clients = data;
     });
+
   }
 
+  // ------------------------
+  // CALCULATIONS
+  // ------------------------
   listenCalculations(): void {
     this.ticketForm.valueChanges.subscribe(values => {
       const salePrice = Number(values.salePrice) || 0;
@@ -76,45 +87,46 @@ export class TicketComponent implements OnInit {
     });
   }
 
-  selectActive(value: 'Yes' | 'No'): void {
-    this.selectedActive = value;
-  }
-
-  selectBalance(value: 'paid' | 'unpaid'): void {
-    this.selectedBalance = value;
-  }
-
+  // ------------------------
+  // SUBMIT
+  // ------------------------
   onSubmit(): void {
     if (this.ticketForm.invalid) {
       this.ticketForm.markAllAsTouched();
       return;
     }
 
-    const v = this.ticketForm.value;
+    const formValue = this.ticketForm.value;
 
     const ticket: Partial<Ticket> = {
       client: {
-        clientId: v.client.id,
-        name: v.client.name,
-        phone: v.client.phone,
-        hotel: v.client.hotel,
-        pax: v.client.pax
+        clientId: formValue.client.id,
+        name: formValue.client.name,
+        phone: formValue.client.phone,
+        hotel: formValue.client.hotel,
+        pax: formValue.client.pax
       },
+
       activity: {
-        activityId: v.activity.activityId,
-        name: v.activity.activityName
+        activityId: formValue.activity.activityId,
+        name: formValue.activity.activityName
       },
+
       salePrice: {
-        amount: Number(v.salePrice),
+        amount: Number(formValue.salePrice),
         currency: 'USD'
       },
+
       paymentStatus: this.selectedBalance === 'paid' ? 'PAID' : 'REST',
+
       rest: this.selectedBalance === 'unpaid'
         ? { amount: this.totalPrice, currency: 'USD' }
         : undefined,
-      pickupPoint: v.pickupPoint,
-      pickupTime: v.pickupTime,
-      activityDate: v.date,
+
+      pickupPoint: formValue.pickupPoint,
+      pickupTime: formValue.pickupTime,
+      activityDate: formValue.date,
+
       createdAt: new Date()
     };
 
