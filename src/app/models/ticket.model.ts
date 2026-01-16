@@ -14,15 +14,8 @@ export interface Ticket {
     name?: string;
   };
 
-  salePrice?: {
-    amount?: number;
-    currency?: 'USD' | 'EUR' | 'GBP' | 'TRY';
-  };
-
-  paymentStatus?: 'PAID' | 'REST';
-
-  rest?: {
-    amount?: number;
-    currency?: 'USD' | 'EUR' | 'GBP' | 'TRY';
-  };
+  price?: number;
+  currency?: '$' | '€' | '£' | '₺';
+  paid?: boolean;
+  rest?: number;
 }
