@@ -1,11 +1,21 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-clients',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './clients.component.html',
-  styleUrl: './clients.component.scss'
+  styleUrls: ['./clients.component.scss']
 })
 export class ClientsComponent {
 
-}
+  client = {
+    name: '',
+    phone: '',
+    pax: 1,
+    hotel: ''
+  };
+
+  saveClient() {
