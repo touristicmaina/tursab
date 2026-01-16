@@ -20,33 +20,18 @@ import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    // Angular basics for standalone components
     importProvidersFrom(
       CommonModule,
       FormsModule,
       SidebarModule,
       CardModule
     ),
-
-    // Router
     provideRouter(routes, withHashLocation()),
-
-    // Firebase
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-
-    // Animations
     provideAnimations()
   ]
 }).catch((err) => {
   console.error(err);
-});    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-
-    // Animations (Angular Material / CoreUI)
-    provideAnimations()
-  ]
-}).catch(console.error);    ]
-  })
-  .catch(err => console.error(err));
+});
