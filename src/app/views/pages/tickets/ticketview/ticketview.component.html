@@ -1,52 +1,42 @@
-<div *ngIf="ticket" class="voucher-ticket" >
-    <div class="header" style="padding-top: 1%;">
-      <div class="left">
-        <img src="assets/images/logoMain.png" alt="Touristic Mania Logo" class="logo" />
-      </div>
-      <div class="center">
-        <img src="assets/images/logo1.png" alt="TURSAB Logo" class="tursab-logo" />
-        <div class="emergency" style="color: red;">7/24<br />EMERGENCY CALL<br /><strong>+90 531 353 1018</strong></div>
-      </div>
-      <div class="right">
-        <div class="voucher-no">№ <span>{{ ticket.ticketId }}</span></div>
-        <div><strong>TRIP</strong>: {{ ticket.activity.activityName }}</div>
-        <div><strong>DAY</strong>: {{ ticket.day }}</div>
-        <div><strong>DATE</strong>: {{ ticket.Date}}</div>
-      </div>
-    </div>
-    <div class="body">
-      <div class="left-section">
-        <div><strong>NAME</strong>: {{ ticket.client.name }}</div>
-        <div><strong>HOTEL</strong>: {{ ticket.client.hotel }}</div>
-        <div><strong>ROOM NO</strong>: {{ ticket.client.roomNumber }}</div>
-        <div><strong>TIME</strong>: {{ getPickTime() }}</div>
-        <div><strong>PICK UP POINT</strong>: {{ ticket.pickupPoint }}</div>
-      </div>
-      <div class="right-section">
-        <div><strong>PAX</strong>: {{ getPaxTotal(ticket.client.pax) }}</div>
-        <div><strong>TOTAL PRICE</strong>:{{ totalPrice }} {{ticket.client.currency}}</div>
-        <div><strong>DEPOSIT</strong>: {{ticket.client.deposit}}</div>
-        <div><strong>BALANCE</strong>: {{ticket.balance}}</div>
-      </div>
-    </div>
-  
-    <div class="footer">
-      <div class="guide">
-        <strong>GUIDE</strong>: {{ ticket.client.guideName }}
-      </div>
-      <div class="phone">
-        <strong>PHONE NUMBER</strong>: {{ ticket.guide.guidePhone }}
-      </div>
-      <div class="note">
-        <p>
-          lşbu VOUCHER Tur operatörü tarafından kendi bünyesinde kontrol için hazırlanmıştır Hiçbir Mali  hüküm yoktur.
-        </p>
-        <p class="warning">Cancellations are not fully refundable</p>
-      </div>
-    </div>
+<div *ngIf="ticket">
+
+  <h3>Ticket #{{ ticket.ticketNumber }}</h3>
+
+  <hr />
+
+  <div><strong>CLIENT</strong>: {{ ticket.client.name }}</div>
+  <div><strong>PHONE</strong>: {{ ticket.client.phone }}</div>
+  <div><strong>HOTEL</strong>: {{ ticket.client.hotel }}</div>
+  <div><strong>PAX</strong>: {{ ticket.client.pax }}</div>
+
+  <hr />
+
+  <div><strong>ACTIVITY</strong>: {{ ticket.activity.name }}</div>
+  <div>
+    <strong>PRICE</strong>:
+    {{ ticket.salePrice.amount }} {{ ticket.salePrice.currency }}
   </div>
-  
-  <div *ngIf="!ticket">
-    <p>Loading ticket...</p>
+
+  <div>
+    <strong>PAYMENT</strong>:
+    {{ ticket.paymentStatus === 'PAID' ? 'Paid' : 'Rest' }}
   </div>
-  
+
+  <div *ngIf="ticket.paymentStatus === 'REST'">
+    <strong>REST AMOUNT</strong>:
+    {{ ticket.rest?.amount }} {{ ticket.rest?.currency }}
+  </div>
+
+  <hr />
+
+  <div><strong>GUIDE</strong>: {{ ticket.guide.guideName }}</div>
+  <div><strong>GUIDE PHONE</strong>: {{ ticket.guide.guidePhone }}</div>
+
+  <hr />
+
+  <div><strong>PICKUP POINT</strong>: {{ ticket.pickupPoint }}</div>
+  <div><strong>PICKUP TIME</strong>: {{ ticket.pickupTime }}</div>
+
+  <div><strong>ACTIVITY DATE</strong>: {{ ticket.activityDate }}</div>
+
+</div>
