@@ -37,12 +37,5 @@ export interface Ticket {
   };
 
   activityDate: string;
-
-  createdBy: {
-    uid: string;
-    name: string;
-    email: string;
-  };
-
   createdAt: Date;
 }
