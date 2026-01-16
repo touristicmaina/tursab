@@ -1,1 +1,41 @@
-<p>clients works!</p>
+<h2>Client Information</h2>
+
+<label>Customer Name</label>
+<input [(ngModel)]="client.name" />
+
+<label>Phone</label>
+<input [(ngModel)]="client.phone" type="tel" />
+
+<label>Number of People</label>
+<input [(ngModel)]="client.pax" type="number" min="1" />
+
+<label>Hotel</label>
+<input [(ngModel)]="client.hotel" />
+
+<label>Guide Name</label>
+<input [(ngModel)]="client.guideName" />
+
+<label>Guide Phone</label>
+<input [(ngModel)]="client.guidePhone" type="tel" />
+
+<label>Final Price</label>
+<div class="row">
+  <input type="number" [(ngModel)]="client.finalPrice" />
+  <select [(ngModel)]="client.currency">
+    <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+  </select>
+</div>
+
+<div class="paid-row">
+  <input type="checkbox" [(ngModel)]="client.paid" (change)="onPaidChange()" />
+  <span>Paid</span>
+</div>
+
+<label>Rest</label>
+<input
+  type="number"
+  [(ngModel)]="client.rest"
+  [disabled]="client.paid"
+/>
+
+<button (click)="saveClient()">Save</button>
