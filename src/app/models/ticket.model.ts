@@ -1,5 +1,6 @@
 export interface Ticket {
   id?: string;
+
   ticketNumber?: string;
 
   client?: {
@@ -30,4 +31,6 @@ export interface Ticket {
   guide?: {
     guideName?: string;
   };
+
+  createdAt?: any;
 }
