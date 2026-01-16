@@ -1,48 +1,16 @@
 export interface Ticket {
-  id: string;
-  ticketNumber: string;
-
-  client: {
-    clientId: string;
-    name: string;
-    phone: string;
-    hotel: string;
-    pax: number;
+  ticketId?: string;
+  client?: {
+    name?: string;
+    phone?: string;
   };
-
-  activity: {
-    activityId: string;
-    name: string;
+  activity?: {
+    name?: string;
   };
-
-  salePrice: {
-    amount: number;
-    currency: 'USD' | 'EUR' | 'GBP' | 'TRY';
+  salePrice?: {
+    amount?: number;
+    currency?: string;
   };
-
-  paymentStatus: 'PAID' | 'REST';
-
-  rest?: {
-    amount: number;
-    currency: 'USD' | 'EUR' | 'GBP' | 'TRY';
-  };
-
-  pickupPoint: string;
-  pickupTime: string;
-
-  guide: {
-    guideId: string;
-    guideName: string;
-    guidePhone: string;
-  };
-
-  activityDate: string;
-
-  createdBy: {
-    uid: string;
-    name: string;
-    email: string;
-  };
-
-  createdAt: Date;
+  paymentStatus?: string;
+  activityDate?: Date;
 }
