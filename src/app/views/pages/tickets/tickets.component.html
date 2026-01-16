@@ -1,77 +1,79 @@
-<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="row g-3">
+<div class="container">
 
-  <c-col md="6">
-    <label cLabel>Activity</label>
-    <select class="form-select" formControlName="activity">
-      <option *ngFor="let a of services" [ngValue]="a">
-        {{ a.activityName }}
-      </option>
+  <h2>
+    {{ mode === 'edit' ? 'Update Ticket' : 'Add Ticket' }}
+  </h2>
+
+  <form (ngSubmit)="saveTicket()">
+
+    <h4>Client Info</h4>
+
+    <input
+      type="text"
+      placeholder="Client Name"
+      [(ngModel)]="formValue.client.name"
+      name="clientName"
+      required
+    />
+
+    <input
+      type="tel"
+      placeholder="Phone"
+      [(ngModel)]="formValue.client.phone"
+      name="clientPhone"
+    />
+
+    <input
+      type="number"
+      placeholder="Pax"
+      [(ngModel)]="formValue.client.pax"
+      name="pax"
+      min="1"
+    />
+
+    <input
+      type="text"
+      placeholder="Hotel"
+      [(ngModel)]="formValue.client.hotel"
+      name="hotel"
+    />
+
+    <hr />
+
+    <h4>Price</h4>
+
+    <input
+      type="number"
+      placeholder="Final Price"
+      [(ngModel)]="formValue.salePrice"
+      name="salePrice"
+    />
+
+    <select [(ngModel)]="formValue.currency" name="currency">
+      <option value="USD">$</option>
+      <option value="EUR">€</option>
+      <option value="GBP">£</option>
+      <option value="TRY">₺</option>
     </select>
-  </c-col>
 
-  <c-col md="6">
-    <label cLabel>Client</label>
-    <select class="form-select" formControlName="client">
-      <option *ngFor="let c of clients" [ngValue]="c">
-        {{ c.name }}
-      </option>
+    <select [(ngModel)]="formValue.paymentStatus" name="paymentStatus">
+      <option value="PAID">Paid</option>
+      <option value="REST">Rest</option>
     </select>
-  </c-col>
 
-  <c-col md="6">
-    <label cLabel>Sale Price</label>
-    <input type="number" formControlName="salePrice" class="form-control">
-  </c-col>
+    <input
+      *ngIf="formValue.paymentStatus === 'REST'"
+      type="number"
+      placeholder="Rest Amount"
+      [(ngModel)]="formValue.restAmount"
+      name="restAmount"
+    />
 
-  <c-col md="6">
-    <label cLabel>Commission %</label>
-    <input type="number" formControlName="commissionRate" class="form-control">
-  </c-col>
+    <br /><br />
 
-  <c-col md="4">
-    <label cLabel>Adults</label>
-    <input type="number" formControlName="costPriceAdult" class="form-control">
-  </c-col>
-
-  <c-col md="4">
-    <label cLabel>Children</label>
-    <input type="number" formControlName="costPriceChild" class="form-control">
-  </c-col>
-
-  <c-col md="4">
-    <label cLabel>Babies</label>
-    <input type="number" formControlName="costPriceBaby" class="form-control">
-  </c-col>
-
-  <c-col md="3">
-    <strong>Commission</strong>
-    <div class="form-control">{{ commissionAmount }}</div>
-  </c-col>
-
-  <c-col md="3">
-    <strong>Total Cost</strong>
-    <div class="form-control">{{ totalPrice }}</div>
-  </c-col>
-
-  <c-col md="6">
-    <label cLabel>Date</label>
-    <input type="date" formControlName="date" class="form-control">
-  </c-col>
-
-  <c-col md="6">
-    <label cLabel>Pickup Time</label>
-    <input type="time" formControlName="pickupTime" class="form-control">
-  </c-col>
-
-  <c-col md="12">
-    <label cLabel>Pickup Point</label>
-    <input type="text" formControlName="pickupPoint" class="form-control">
-  </c-col>
-
-  <c-col xs="12">
-    <button cButton type="submit">
-      {{ mode === 'edit' ? 'Update Ticket' : 'Add Ticket' }}
+    <button type="submit">
+      Save Ticket
     </button>
-  </c-col>
 
-</form>
+  </form>
+</div>
