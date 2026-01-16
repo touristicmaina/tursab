@@ -2,42 +2,45 @@
 
   <h2>New Client</h2>
 
-  <form>
+  <form (ngSubmit)="saveClient()">
 
-    <!-- Client Name -->
     <div class="form-group">
       <label>Client Name</label>
       <input
         type="text"
         class="form-control"
-        placeholder="Enter client name">
+        [(ngModel)]="client.name"
+        name="name"
+        required>
     </div>
 
-    <!-- Phone -->
     <div class="form-group">
       <label>Phone Number</label>
       <input
         type="tel"
         class="form-control"
-        placeholder="+90 5xx xxx xx xx">
+        [(ngModel)]="client.phone"
+        name="phone"
+        required>
     </div>
 
-    <!-- PAX -->
     <div class="form-group">
       <label>Number of People (PAX)</label>
       <input
         type="number"
         class="form-control"
+        [(ngModel)]="client.pax"
+        name="pax"
         min="1">
     </div>
 
-    <!-- Hotel -->
     <div class="form-group">
       <label>Hotel Name</label>
       <input
         type="text"
         class="form-control"
-        placeholder="Hotel name">
+        [(ngModel)]="client.hotel"
+        name="hotel">
     </div>
 
     <button type="submit" class="btn btn-primary">
