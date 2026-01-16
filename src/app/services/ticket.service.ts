@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 
 @Injectable({
@@ -7,10 +8,11 @@ import { Ticket } from '../models/ticket.model';
 })
 export class TicketService {
 
-  constructor(private firestore: Firestore) {}
+  private apiUrl = 'YOUR_API_URL_HERE';
 
-  addTicket(ticket: Ticket) {
-    const ticketsRef = collection(this.firestore, 'tickets');
-    return addDoc(ticketsRef, ticket);
+  constructor(private http: HttpClient) {}
+
+  getTicketById(id: string): Observable<Ticket> {
+    return this.http.get<Ticket>(`${this.apiUrl}/tickets/${id}`);
   }
 }
