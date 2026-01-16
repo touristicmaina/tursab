@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 
@@ -8,11 +8,29 @@ import { Ticket } from '../models/ticket.model';
 })
 export class TicketService {
 
-  private apiUrl = 'YOUR_API_URL_HERE';
+  constructor(private firestore: Firestore) {}
 
-  constructor(private http: HttpClient) {}
+  // --------------------
+  // ACTIVITIES
+  // --------------------
+  getActivities(): Observable<any[]> {
+    const ref = collection(this.firestore, 'activities');
+    return collectionData(ref, { idField: 'id' });
+  }
 
-  getTicketById(id: string): Observable<Ticket> {
-    return this.http.get<Ticket>(`${this.apiUrl}/tickets/${id}`);
+  // --------------------
+  // CLIENTS
+  // --------------------
+  getClients(): Observable<any[]> {
+    const ref = collection(this.firestore, 'clients');
+    return collectionData(ref, { idField: 'id' });
+  }
+
+  // --------------------
+  // CREATE TICKET
+  // --------------------
+  createTicket(ticket: Partial<Ticket>): Promise<any> {
+    const ref = collection(this.firestore, 'tickets');
+    return addDoc(ref, ticket);
   }
 }
