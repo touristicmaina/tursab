@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Ticket } from 'src/app/models/ticket.model';
 
 @Component({
   selector: 'app-tickets',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './tickets.component.html',
 })
 export class TicketsComponent {
+
+  mode: 'add' | 'edit' = 'add';
 
   formValue: any = {
     client: {
@@ -28,17 +34,8 @@ export class TicketsComponent {
   saveTicket() {
 
     const ticket: Partial<Ticket> = {
-      client: {
-        id: this.formValue.client.id,
-        name: this.formValue.client.name,
-        phone: this.formValue.client.phone,
-        hotel: this.formValue.client.hotel,
-        pax: this.formValue.client.pax
-      },
-      activity: {
-        id: this.formValue.activity.id,
-        name: this.formValue.activity.name
-      },
+      client: this.formValue.client,
+      activity: this.formValue.activity,
       salePrice: {
         amount: this.formValue.salePrice,
         currency: this.formValue.currency
@@ -49,6 +46,6 @@ export class TicketsComponent {
         : { amount: this.formValue.restAmount, currency: this.formValue.currency }
     };
 
-    console.log('TICKET SAVED:', ticket);
+    console.log('TICKET:', ticket);
   }
 }
