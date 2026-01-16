@@ -1,40 +1,151 @@
-<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="row g-3">
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TicketService } from '../../../services/ticket.service';
+import { Ticket } from '../../../models/ticket.model';
 
-  <!-- Activity Dropdown -->
+@Component({
+  selector: 'app-ticket',
+  templateUrl: './ticket.component.html',
+  styleUrls: ['./ticket.component.scss']
+})
+export class TicketComponent implements OnInit {
 
-  
-  <c-col md="6">
-    <label cLabel for="activity">Activity</label>
-    <select cFormControl id="activity" class="form-select" formControlName="activity">
-      <option *ngFor="let activity of services" [ngValue]="activity">
-        {{ activity.activityName }}
-      </option>
-    </select>
-  </c-col>
+  ticketForm!: FormGroup;
 
-  <!-- Client Dropdown -->
-  <c-col md="6">
-    <label cLabel for="client">Client Name</label>
-    <select cFormControl id="client" class="form-select" formControlName="client" searchable>
+  services: any[] = [];
+  clients: any[] = [];
 
+  mode: 'add' | 'edit' = 'add';
 
+  selectedActive: 'Yes' | 'No' = 'Yes';
+  selectedBalance: 'paid' | 'unpaid' = 'paid';
 
-      <option *ngFor="let client of clients" [ngValue]="client">
-        {{ client.name }}
-      </option>
-    </select>
-  </c-col>
+  commissionAmount = 0;
+  totalPrice = 0;
 
+  constructor(
+    private fb: FormBuilder,
+    private ticketService: TicketService
+  ) {}
 
+  ngOnInit(): void {
+    this.buildForm();
+    this.loadData();
+    this.listenCalculations();
+  }
 
-  <c-col md="6">
-    <label cLabel for="salePrice">Sale Price</label>
-    <input cFormControl id="salePrice" type="text" formControlName="salePrice" />
-  </c-col>
+  // ------------------------
+  // FORM
+  // ------------------------
+  buildForm(): void {
+    this.ticketForm = this.fb.group({
+      activity: [null, Validators.required],
+      client: [null, Validators.required],
 
-  <c-col xs="6">
-    <label cLabel for="commissionRate">Commission Rate</label>
-    <input cFormControl id="commissionRate" type="text" formControlName="commissionRate" />
+      salePrice: [0, Validators.required],
+      commissionRate: [0],
+
+      costPriceAdult: [0],
+      costPriceChild: [0],
+      costPriceBaby: [0],
+
+      date: [null, Validators.required],
+      pickupTime: ['', Validators.required],
+      pickupPoint: ['', Validators.required]
+    });
+  }
+
+  // ------------------------
+  // LOAD DATA
+  // ------------------------
+  loadData(): void {
+    this.ticketService.getActivities().subscribe(data => {
+      this.services = data;
+    });
+
+    this.ticketService.getClients().subscribe(data => {
+      this.clients = data;
+    });
+  }
+
+  // ------------------------
+  // CALCULATIONS
+  // ------------------------
+  listenCalculations(): void {
+    this.ticketForm.valueChanges.subscribe(values => {
+      const salePrice = Number(values.salePrice) || 0;
+      const commissionRate = Number(values.commissionRate) || 0;
+
+      const adult = Number(values.costPriceAdult) || 0;
+      const child = Number(values.costPriceChild) || 0;
+      const baby = Number(values.costPriceBaby) || 0;
+
+      this.commissionAmount = (salePrice * commissionRate) / 100;
+      this.totalPrice = adult + child + baby;
+    });
+  }
+
+  // ------------------------
+  // DROPDOWNS
+  // ------------------------
+  selectActive(value: 'Yes' | 'No'): void {
+    this.selectedActive = value;
+  }
+
+  selectBalance(value: 'paid' | 'unpaid'): void {
+    this.selectedBalance = value;
+  }
+
+  // ------------------------
+  // SUBMIT
+  // ------------------------
+  onSubmit(): void {
+    if (this.ticketForm.invalid) {
+      this.ticketForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.ticketForm.value;
+
+    const ticket: Partial<Ticket> = {
+      client: {
+        clientId: formValue.client.id,
+        name: formValue.client.name,
+        phone: formValue.client.phone,
+        hotel: formValue.client.hotel,
+        pax: formValue.client.pax
+      },
+
+      activity: {
+        activityId: formValue.activity.activityId,
+        name: formValue.activity.activityName
+      },
+
+      salePrice: {
+        amount: Number(formValue.salePrice),
+        currency: 'USD'
+      },
+
+      paymentStatus: this.selectedBalance === 'paid' ? 'PAID' : 'REST',
+
+      rest: this.selectedBalance === 'unpaid'
+        ? { amount: this.totalPrice, currency: 'USD' }
+        : undefined,
+
+      pickupPoint: formValue.pickupPoint,
+      pickupTime: formValue.pickupTime,
+      activityDate: formValue.date,
+
+      createdAt: new Date()
+    };
+
+    if (this.mode === 'add') {
+      this.ticketService.createTicket(ticket);
+    } else {
+      // edit mode later
+    }
+  }
+}    <input cFormControl id="commissionRate" type="text" formControlName="commissionRate" />
   </c-col>
 
   <c-col md="4">
