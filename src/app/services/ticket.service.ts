@@ -3,29 +3,40 @@ import {
   Firestore,
   collection,
   addDoc,
-  Timestamp
+  collectionData,
+  doc,
+  updateDoc
 } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class TicketService {
-  constructor(private firestore: Firestore) {}
 
-  async createTicket(data: Ticket): Promise<void> {
-    const ticketsRef = collection(this.firestore, 'tickets');
+  private ticketsRef;
 
-    const ticket: Ticket = {
-      ...data,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+  constructor(private firestore: Firestore) {
+    this.ticketsRef = collection(this.firestore, 'tickets');
+  }
 
-    await addDoc(ticketsRef, {
+  // Get all tickets
+  getTickets(): Observable<Ticket[]> {
+    return collectionData(this.ticketsRef, { idField: 'id' }) as Observable<Ticket[]>;
+  }
+
+  // Create ticket
+  createTicket(ticket: Ticket) {
+    return addDoc(this.ticketsRef, {
       ...ticket,
-      createdAt: Timestamp.fromDate(ticket.createdAt),
-      updatedAt: Timestamp.fromDate(ticket.updatedAt),
-      day: Timestamp.fromDate(ticket.day),
-      Date: Timestamp.fromDate(ticket.Date)
+      createdAt: new Date()
     });
+  }
+
+  // Update ticket status
+  updateTicketStatus(ticketId: string, isActive: 'YES' | 'NO') {
+    const ticketDoc = doc(this.firestore, `tickets/${ticketId}`);
+    return updateDoc(ticketDoc, { isActive });
   }
 }
