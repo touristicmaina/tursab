@@ -1,6 +1,12 @@
-import { Ticket } from '../../../models/ticket.model';
+import { Component, OnInit } from '@angular/core';
+import { Ticket } from '../../../../models/ticket.model';
 
-export class TicketlistComponent {
+@Component({
+  selector: 'app-ticketlist',
+  templateUrl: './ticketlist.component.html',
+  styleUrls: ['./ticketlist.component.scss']
+})
+export class TicketlistComponent implements OnInit {
 
   tickets: Ticket[] = [];
   filteredTickets: Ticket[] = [];
@@ -10,7 +16,6 @@ export class TicketlistComponent {
   }
 
   loadTickets(): void {
-    // مؤقتاً (أو من السيرفس)
     this.filteredTickets = this.tickets;
   }
 }
