@@ -7,40 +7,39 @@ import {
   doc,
   updateDoc,
   deleteDoc,
-  getDoc,
   CollectionReference,
   DocumentReference
 } from '@angular/fire/firestore';
 import { ActivityModel } from '../models/activities.model';
 import { Observable } from 'rxjs';
-import { collectionData, docData } from '@angular/fire/firestore';
+import { collectionData } from '@angular/fire/firestore';
 import { query, where } from 'firebase/firestore';
+
 @Injectable({ providedIn: 'root' })
 export class ServicesListService {
   constructor(private firestore: Firestore) {}
 
   private formatServiceId(index: number): string {
-    return index.toString().padStart(4, '0'); // formats like 0001, 0002, etc.
+    return index.toString().padStart(4, '0');
   }
 
   private getCollection(): CollectionReference {
     return collection(this.firestore, 'activities');
   }
 
-  /**
-   * Add new activity
-   */
-  async addService(data: Omit<ActivityModel, 'activityserviceId'>): Promise<DocumentReference> {
+  // =========================
+  // ADD
+  // =========================
+  async addService(
+    data: Omit<ActivityModel, 'activityserviceId'>
+  ): Promise<DocumentReference> {
     const servicesCollection = this.getCollection();
-
-    // Get current count to create new ID
     const snapshot = await getDocs(servicesCollection);
     const count = snapshot.size;
-    const nextId = this.formatServiceId(count + 1);
 
     const newActivity: ActivityModel = {
       ...data,
-      activityserviceId: nextId,
+      activityserviceId: this.formatServiceId(count + 1),
       activityTotalIncome: data.activityTotalIncome ?? 0,
       activityTotalClients: data.activityTotalClients ?? 0,
       activityTotalCommision: data.activityTotalCommision ?? 0,
@@ -50,69 +49,48 @@ export class ServicesListService {
     return addDoc(servicesCollection, newActivity);
   }
 
-  /**
-   * Get all activities
-   */
+  // =========================
+  // GET ALL (Observable)
+  // =========================
+  getActivities(): Observable<ActivityModel[]> {
+    const activitiesCollection = collection(this.firestore, 'activities');
+    return collectionData(activitiesCollection, {
+      idField: 'id',
+    }) as Observable<ActivityModel[]>;
+  }
+
+  // alias (اختياري – حتى ما ينكسر كود قديم)
   getAllServices(): Observable<ActivityModel[]> {
-    const activitiesCollection= collection(this.firestore,'activities')
-    return collectionData(activitiesCollection, { idField: 'id' }) as Observable<ActivityModel[]>;
+    return this.getActivities();
   }
 
-  /**
-   * Get single activity by Firestore doc ID
-   */
-//   getServiceById(docId: string): Observable<ActivityModel> {
-//     const ref = doc(this.firestore, `activities/${docId}`);
-//     return docData(ref, { idField: 'id' }) as Observable<ActivityModel>;
-//   }
-
-  /**
-   * Update activity by Firestore doc ID
-   */
-  async updateService(docId: string, updatedData: Partial<ActivityModel>): Promise<void> {
+  // =========================
+  // UPDATE
+  // =========================
+  async updateService(
+    docId: string,
+    updatedData: Partial<ActivityModel>
+  ): Promise<void> {
     const ref = doc(this.firestore, `activities/${docId}`);
-
-    const dataToUpdate: Partial<ActivityModel> = {
-      ...updatedData,
-      activityTotalIncome: updatedData.activityTotalIncome ?? 0,
-      activityTotalClients: updatedData.activityTotalClients ?? 0,
-      activityTotalCommision: updatedData.activityTotalCommision ?? 0,
-    };
-
-    return updateDoc(ref, dataToUpdate);
+    return updateDoc(ref, updatedData);
   }
 
-  /**
-   * Delete activity by Firestore doc ID
-   */
+  // =========================
+  // DELETE by activityserviceId
+  // =========================
+  async deleteService(activityId: string): Promise<void> {
+    const q = query(
+      collection(this.firestore, 'activities'),
+      where('activityserviceId', '==', activityId)
+    );
 
-    async deleteService(activityId: string) {
-      const activitiesCollection = collection(this.firestore, 'activities');
-      const q = query(activitiesCollection, where('activityserviceId', '==', activityId));
-      const snapshot = await getDocs(q);
-    
-      if (!snapshot.empty) {
-        const docId = snapshot.docs[0].id;
-        const activityDoc = doc(this.firestore, `activities/${docId}`);
-        return deleteDoc(activityDoc);
-      } else {
-        throw new Error(`No activity found with activitysId: ${activityId}`);
-      }
+    const snapshot = await getDocs(q);
+
+    if (!snapshot.empty) {
+      const docId = snapshot.docs[0].id;
+      return deleteDoc(doc(this.firestore, `activities/${docId}`));
     }
 
-     async getActivityById(activityId: string): Promise<{ id: string } & ActivityModel | null> {
-        const ActivitiesCollection = collection(this.firestore, 'activities');
-        const q = query(ActivitiesCollection, where('activityserviceId', '==', activityId));
-        const snapshot = await getDocs(q);
-      
-        if (!snapshot.empty) {
-          const docSnap = snapshot.docs[0];
-          return {
-            id: docSnap.id,
-            ...docSnap.data(),
-          } as { id: string } & ActivityModel;
-        } else {
-          return null;
-        }
-      }
+    throw new Error(`No activity found with ID ${activityId}`);
+  }
 }
