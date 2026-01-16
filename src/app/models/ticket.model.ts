@@ -45,4 +45,4 @@ export interface Ticket {
   };
 
   createdAt: Date;
-}}
+}
