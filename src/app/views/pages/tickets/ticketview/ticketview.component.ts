@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TicketService } from '../../../../services/ticket.service';
 import { Ticket } from '../../../../models/ticket.model';
 
@@ -12,10 +13,22 @@ export class TicketviewComponent implements OnInit {
   ticket!: Ticket;
 
   constructor(
+    private route: ActivatedRoute,
     private ticketService: TicketService
   ) {}
 
   ngOnInit(): void {
-    // لاحقًا تجيب التكت من Firestore
+    const ticketId = this.route.snapshot.paramMap.get('id');
+
+    if (ticketId) {
+      this.ticketService.getTicketById(ticketId).subscribe({
+        next: (data: Ticket) => {
+          this.ticket = data;
+        },
+        error: (err) => {
+          console.error('Error loading ticket', err);
+        }
+      });
+    }
   }
 }
