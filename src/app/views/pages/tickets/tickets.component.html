@@ -1,252 +1,77 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TicketService } from '../../../services/ticket.service';
-import { Ticket } from '../../../models/ticket.model';
+<form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="row g-3">
 
-@Component({
-  selector: 'app-ticket',
-  templateUrl: './ticket.component.html',
-  styleUrls: ['./ticket.component.scss']
-})
-export class TicketComponent implements OnInit {
+  <c-col md="6">
+    <label cLabel>Activity</label>
+    <select class="form-select" formControlName="activity">
+      <option *ngFor="let a of services" [ngValue]="a">
+        {{ a.activityName }}
+      </option>
+    </select>
+  </c-col>
 
-  ticketForm!: FormGroup;
+  <c-col md="6">
+    <label cLabel>Client</label>
+    <select class="form-select" formControlName="client">
+      <option *ngFor="let c of clients" [ngValue]="c">
+        {{ c.name }}
+      </option>
+    </select>
+  </c-col>
 
-  services: any[] = [];
-  clients: any[] = [];
+  <c-col md="6">
+    <label cLabel>Sale Price</label>
+    <input type="number" formControlName="salePrice" class="form-control">
+  </c-col>
 
-  mode: 'add' | 'edit' = 'add';
-
-  selectedActive: 'Yes' | 'No' = 'Yes';
-  selectedBalance: 'paid' | 'unpaid' = 'paid';
-
-  commissionAmount = 0;
-  totalPrice = 0;
-
-  constructor(
-    private fb: FormBuilder,
-    private ticketService: TicketService
-  ) {}
-
-  ngOnInit(): void {
-    this.buildForm();
-    this.loadData();
-    this.listenCalculations();
-  }
-
-  // ------------------------
-  // FORM
-  // ------------------------
-  buildForm(): void {
-    this.ticketForm = this.fb.group({
-      activity: [null, Validators.required],
-      client: [null, Validators.required],
-
-      salePrice: [0, Validators.required],
-      commissionRate: [0],
-
-      costPriceAdult: [0],
-      costPriceChild: [0],
-      costPriceBaby: [0],
-
-      date: [null, Validators.required],
-      pickupTime: ['', Validators.required],
-      pickupPoint: ['', Validators.required]
-    });
-  }
-
-  // ------------------------
-  // LOAD DATA
-  // ------------------------
-  loadData(): void {
-    this.ticketService.getActivities().subscribe(data => {
-      this.services = data;
-    });
-
-    this.ticketService.getClients().subscribe(data => {
-      this.clients = data;
-    });
-  }
-
-  // ------------------------
-  // CALCULATIONS
-  // ------------------------
-  listenCalculations(): void {
-    this.ticketForm.valueChanges.subscribe(values => {
-      const salePrice = Number(values.salePrice) || 0;
-      const commissionRate = Number(values.commissionRate) || 0;
-
-      const adult = Number(values.costPriceAdult) || 0;
-      const child = Number(values.costPriceChild) || 0;
-      const baby = Number(values.costPriceBaby) || 0;
-
-      this.commissionAmount = (salePrice * commissionRate) / 100;
-      this.totalPrice = adult + child + baby;
-    });
-  }
-
-  // ------------------------
-  // DROPDOWNS
-  // ------------------------
-  selectActive(value: 'Yes' | 'No'): void {
-    this.selectedActive = value;
-  }
-
-  selectBalance(value: 'paid' | 'unpaid'): void {
-    this.selectedBalance = value;
-  }
-
-  // ------------------------
-  // SUBMIT
-  // ------------------------
-  onSubmit(): void {
-    if (this.ticketForm.invalid) {
-      this.ticketForm.markAllAsTouched();
-      return;
-    }
-
-    const formValue = this.ticketForm.value;
-
-    const ticket: Partial<Ticket> = {
-      client: {
-        clientId: formValue.client.id,
-        name: formValue.client.name,
-        phone: formValue.client.phone,
-        hotel: formValue.client.hotel,
-        pax: formValue.client.pax
-      },
-
-      activity: {
-        activityId: formValue.activity.activityId,
-        name: formValue.activity.activityName
-      },
-
-      salePrice: {
-        amount: Number(formValue.salePrice),
-        currency: 'USD'
-      },
-
-      paymentStatus: this.selectedBalance === 'paid' ? 'PAID' : 'REST',
-
-      rest: this.selectedBalance === 'unpaid'
-        ? { amount: this.totalPrice, currency: 'USD' }
-        : undefined,
-
-      pickupPoint: formValue.pickupPoint,
-      pickupTime: formValue.pickupTime,
-      activityDate: formValue.date,
-
-      createdAt: new Date()
-    };
-
-    if (this.mode === 'add') {
-      this.ticketService.createTicket(ticket);
-    } else {
-      // edit mode later
-    }
-  }
-}    <input cFormControl id="commissionRate" type="text" formControlName="commissionRate" />
+  <c-col md="6">
+    <label cLabel>Commission %</label>
+    <input type="number" formControlName="commissionRate" class="form-control">
   </c-col>
 
   <c-col md="4">
-    <label cLabel for="costPriceAdult">Adults</label>
-    <input cFormControl id="costPriceAdult" type="number" formControlName="costPriceAdult" />
+    <label cLabel>Adults</label>
+    <input type="number" formControlName="costPriceAdult" class="form-control">
   </c-col>
 
   <c-col md="4">
-    <label cLabel for="costPriceChild">Cost-Price Child</label>
-    <input cFormControl id="costPriceChild" type="number" formControlName="costPriceChild" />
+    <label cLabel>Children</label>
+    <input type="number" formControlName="costPriceChild" class="form-control">
   </c-col>
 
   <c-col md="4">
-    <label cLabel for="costPriceBaby">Babies</label>
-    <input cFormControl id="costPriceBaby" type="number" formControlName="costPriceBaby" />
-  </c-col>
-
-  <!-- Currency Dropdown – no form control to attach label to -->
-  <c-col md="3">
-    <span class="form-label d-block">Active?</span>
-    <c-dropdown class="d-block w-100">
-      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
-        {{ selectedActive }}
-      </button>
-      <ul cDropdownMenu>
-        <li>
-          <a cDropdownItem (click)="selectActive('Yes')">Yes</a>
-        </li>
-        <li>
-          <a cDropdownItem (click)="selectActive('No')">No</a>
-        </li>
-      </ul>
-    </c-dropdown>
- 
-  </c-col>
-
- <c-col md="3">
-    <span class="form-label d-block">Balance</span>
-    <c-dropdown class="d-block w-100">
-      <button cButton cDropdownToggle color="secondary" class="w-100 text-start">
-        {{ selectedBalance }}
-      </button>
-      <ul cDropdownMenu>
-        <li>
-          <a cDropdownItem (click)="selectBalance('paid')">Paid</a>
-        </li>
-        <li>
-          <a cDropdownItem (click)="selectBalance('unpaid')">UnPaid</a>
-        </li>
-      </ul>
-    </c-dropdown>
- 
-  </c-col>
-  <!-- Readonly Output - use <div> only, no form field association -->
-  <c-col md="3">
-    <h6 cLabel id="commissionAmountLabel">Commission Amount</h6>
-    <div class="form-control" role="textbox" aria-labelledby="commissionAmountLabel" tabindex="0">
-      {{ commissionAmount }}
-    </div>
+    <label cLabel>Babies</label>
+    <input type="number" formControlName="costPriceBaby" class="form-control">
   </c-col>
 
   <c-col md="3">
-    <h6 cLabel id="costPriceTotalLabel">Cost Price Total</h6>
-    <div class="form-control" role="textbox" aria-labelledby="costPriceTotalLabel" tabindex="0">
-      {{ totalPrice }}
-    </div>
+    <strong>Commission</strong>
+    <div class="form-control">{{ commissionAmount }}</div>
   </c-col>
 
+  <c-col md="3">
+    <strong>Total Cost</strong>
+    <div class="form-control">{{ totalPrice }}</div>
+  </c-col>
 
-  <!-- Pickup Section -->
+  <c-col md="6">
+    <label cLabel>Date</label>
+    <input type="date" formControlName="date" class="form-control">
+  </c-col>
+
+  <c-col md="6">
+    <label cLabel>Pickup Time</label>
+    <input type="time" formControlName="pickupTime" class="form-control">
+  </c-col>
+
   <c-col md="12">
-    <h6 cLabel>Pick Up</h6>
-  </c-col>
-
-  <c-col md="4">
-    <mat-form-field class="ml3" appearance="fill" theme="dark" style="color: secondary;">
-      <input matInput [matDatepicker]="picker" placeholder="Pick Up Date" formControlName="date" id="pickupDate" />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-    </c-col>
-  
-
-  <c-col md="4">
-    <mat-form-field appearance="fill" backgroundColor="primary">
-      <input matInput formControlName="pickupTime" [matTimepicker]="timepicker" id="pickupTime" placeholder="Pick Up Time" />
-      <mat-timepicker-toggle matSuffix [for]="timepicker"></mat-timepicker-toggle>
-      <mat-timepicker #timepicker></mat-timepicker>
-    </mat-form-field>
-  </c-col>
-
-
-
-
-
-  <c-col md="4">
-    <label cLabel for="pickupPoint">Pick Up Location</label>
-    <input cFormControl id="pickupPoint" type="text" formControlName="pickupPoint" />
+    <label cLabel>Pickup Point</label>
+    <input type="text" formControlName="pickupPoint" class="form-control">
   </c-col>
 
   <c-col xs="12">
-    <button cButton type="submit"> {{ mode === 'edit' ? 'Update Ticket' : 'Add Ticket' }}</button>
+    <button cButton type="submit">
+      {{ mode === 'edit' ? 'Update Ticket' : 'Add Ticket' }}
+    </button>
   </c-col>
+
 </form>
