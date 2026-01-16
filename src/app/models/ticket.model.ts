@@ -1,8 +1,6 @@
 export interface Ticket {
   id?: string;
 
-  ticketNumber?: string;
-
   client?: {
     id?: string;
     name?: string;
@@ -18,19 +16,13 @@ export interface Ticket {
 
   salePrice?: {
     amount?: number;
-    currency?: string;
-  };
-
-  rest?: {
-    amount?: number;
-    currency?: string;
+    currency?: 'USD' | 'EUR' | 'GBP' | 'TRY';
   };
 
   paymentStatus?: 'PAID' | 'REST';
 
-  guide?: {
-    guideName?: string;
+  rest?: {
+    amount?: number;
+    currency?: 'USD' | 'EUR' | 'GBP' | 'TRY';
   };
-
-  createdAt?: any;
 }
