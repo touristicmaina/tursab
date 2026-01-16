@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 
 @Injectable({
@@ -8,29 +7,16 @@ import { Ticket } from '../models/ticket.model';
 })
 export class TicketService {
 
-  constructor(private firestore: Firestore) {}
+  private tickets: Ticket[] = [];
 
-  // --------------------
-  // ACTIVITIES
-  // --------------------
-  getActivities(): Observable<any[]> {
-    const ref = collection(this.firestore, 'activities');
-    return collectionData(ref, { idField: 'id' });
+  constructor() {}
+
+  getTickets(): Observable<Ticket[]> {
+    return of(this.tickets);
   }
 
-  // --------------------
-  // CLIENTS
-  // --------------------
-  getClients(): Observable<any[]> {
-    const ref = collection(this.firestore, 'clients');
-    return collectionData(ref, { idField: 'id' });
-  }
-
-  // --------------------
-  // CREATE TICKET
-  // --------------------
-  createTicket(ticket: Partial<Ticket>): Promise<any> {
-    const ref = collection(this.firestore, 'tickets');
-    return addDoc(ref, ticket);
+  getTicketById(id: string): Observable<Ticket | undefined> {
+    const ticket = this.tickets.find(t => t.id === id);
+    return of(ticket);
   }
 }
