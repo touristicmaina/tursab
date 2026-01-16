@@ -1,7 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-clientslist',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule   // ✅ هذا هو الحل
+  ],
   templateUrl: './clientslist.component.html',
   styleUrls: ['./clientslist.component.scss']
 })
@@ -13,23 +20,10 @@ export class ClientslistComponent {
     pax: 1,
     hotel: '',
     guideName: '',
-    guidePhone: '',
-    finalPrice: 0,
-    currency: '€',
-    paid: false,
-    rest: 0
+    guidePhone: ''
   };
 
-  currencies = ['€', '$', '£', '₺'];
-
-  onPaidChange() {
-    if (this.client.paid) {
-      this.client.rest = 0;
-    }
-  }
-
-  saveClient() {
-    console.log('CLIENT DATA', this.client);
-    // لاحقاً: Firestore / API
+  save() {
+    console.log(this.client);
   }
 }
