@@ -10,7 +10,7 @@ import { Ticket } from '../../../../models/ticket.model';
 })
 export class TicketviewComponent implements OnInit {
 
-  ticket!: Ticket;
+  ticket?: Ticket;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,10 +22,12 @@ export class TicketviewComponent implements OnInit {
 
     if (ticketId) {
       this.ticketService.getTicketById(ticketId).subscribe({
-        next: (data: Ticket) => {
-          this.ticket = data;
+        next: (data: Ticket | undefined) => {
+          if (data) {
+            this.ticket = data;
+          }
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Error loading ticket', err);
         }
       });
