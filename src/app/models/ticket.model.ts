@@ -1,6 +1,8 @@
 export interface Ticket {
-  id: string;               // Firestore document ID
-  ticketNumber: string;     // Auto generated (0001, 0002...)
+  id: string;                // Firestore document ID
+  ticketNumber: string;      // Auto generated (0001, 0002...)
+
+  isActive: 'YES' | 'NO';    // Ticket status
 
   client: {
     clientId: string;
