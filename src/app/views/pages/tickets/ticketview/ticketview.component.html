@@ -2,31 +2,23 @@
 
   <h3>Ticket #{{ t.ticketNumber }}</h3>
 
-  <div><strong>CLIENT</strong>: {{ t.client?.name }}</div>
-  <div><strong>PHONE</strong>: {{ t.client?.phone }}</div>
-  <div><strong>HOTEL</strong>: {{ t.client?.hotel }}</div>
-  <div><strong>PAX</strong>: {{ t.client?.pax }}</div>
+  <div>CLIENT: {{ t.client?.name }}</div>
+  <div>PHONE: {{ t.client?.phone }}</div>
+  <div>HOTEL: {{ t.client?.hotel }}</div>
+  <div>PAX: {{ t.client?.pax }}</div>
 
-  <div><strong>ACTIVITY</strong>: {{ t.activity?.name }}</div>
+  <div>ACTIVITY: {{ t.activity?.name }}</div>
 
   <div>
-    <strong>PRICE</strong>:
-    {{ t.salePrice?.amount }} {{ t.salePrice?.currency }}
+    PRICE: {{ t.salePrice?.amount }} {{ t.salePrice?.currency }}
   </div>
 
   <div>
-    <strong>STATUS</strong>:
-    {{ t.paymentStatus === 'PAID' ? 'Paid' : 'Rest' }}
+    STATUS: {{ t.paymentStatus }}
   </div>
 
   <div *ngIf="t.paymentStatus === 'REST'">
-    <strong>REST</strong>:
-    {{ t.rest?.amount }} {{ t.rest?.currency }}
-  </div>
-
-  <div>
-    <strong>GUIDE</strong>:
-    {{ t.guide?.guideName }}
+    REST: {{ t.rest?.amount }} {{ t.rest?.currency }}
   </div>
 
 </div>
