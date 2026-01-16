@@ -1,134 +1,23 @@
-<c-col xs="12" class="table-responsive">
-<c-card class="mb-4">
- <c-card-header>
-    <div class="mb-2">
-      <strong>Tickets</strong> <strong>List</strong>
-    </div>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Activity</th>
+        <th>Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
 
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <input 
-          cFormControl 
-          [formControl]="searchControl" 
-          placeholder="Search by name"
-          class="form-control"
-          id="ticketSearch"
-          name="ticketSearch"
-        />
-      </div>
-
-      <div class="col-md-6 text-end">
-        <button class="btn btn-success" (click)="downloadExcel()">
-          Download Excel
-        </button>
-      </div>
-    </div>
-  </c-card-header>
-    <c-card-body class="table-responsive">
-      <table [striped]="true" cTable class="table-responsive">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Client</th>
-            <th scope="col">Activity</th>
-            <th scope="col">SalePrice</th>
-            <th scope="col">Currency</th>
-            <th scope="col">Active</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for(ticket of filteredTickets;track ticket.ticketId){
-          <tr>
-            <th scope="row">{{ ticket.ticketId }}</th>
-            <td>{{ ticket.client.name }}</td>
-            <td>{{ ticket.activity.activityName }}</td>
-            <td>{{ ticket.salePrice }}</td>
-            <td>{{ ticket.client.currency }}</td>
-              <td>{{ ticket.isActive }}</td>
-
-            <td class="text-nowrap">
-              <button class="btn btn-link text-danger p-0" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Delete" (click)="confirmDelete(ticket)">
-                <mat-icon>delete</mat-icon>
-              </button>
-
-              <button class="btn btn-link text-info p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Edit" [routerLink]="['/dashboard/tickets/edit', ticket.id]">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button class="btn btn-link text-success p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Download PDF" (click)="downloadPDF(ticket)">
-                <mat-icon>download</mat-icon>
-              </button>
-
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </c-card-body>
- </c-card>
-</c-col>
-
-<c-col xs="12" class="table-responsive">
-  <c-card class="mb-4">
-  <c-card-header>
-    <div class="mb-2">
-      <strong>Tickets</strong> <strong>Commissions</strong>
-    </div>
-
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <input 
-          cFormControl 
-          [formControl]="searchControl" 
-          placeholder="Search by name"
-          class="form-control"
-          id="ticketSearch"
-          name="ticketSearch"
-        />
-      </div>
-
-      <div class="col-md-6 text-end">
-        <button class="btn btn-success" (click)="downloadExcel()">
-          Download Excel
-        </button>
-      </div>
-    </div>
-  </c-card-header>
-    <c-card-body class="table-responsive">
-      <table [striped]="true" cTable>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Client</th>
-            <th scope="col">Activity</th>
-            <th scope="col">Adults </th>
-            <th scope="col">Child</th>
-            <th scope="col">Babies</th>
-            <th scope="col">Rate</th>
-            <th scope="col">commission</th>
-
-
-          </tr>
-        </thead>
-        <tbody>
-          @for(ticket of filteredTickets;track ticket.ticketId){
-          <tr>
-            <th scope="row">{{ ticket.ticketId }}</th>
-            <td>{{ ticket.client.name }}</td>
-            <td>{{ ticket.activity.activityName }}</td>
-            <td>{{ ticket.costPriceAdult ? ticket.costPriceAdult : 0 }}</td>
-            <td>{{ ticket.costPriceChild ? ticket.costPriceChild : 0 }}</td>
-            <td>{{ ticket.costPriceBaby ? ticket.costPriceBaby : 0 }}</td>
-            <td>{{ ticket.commissionRate ? ticket.commissionRate : 0 }}</td>
-            <td>{{ ticket.commissionAmount ? ticket.commissionAmount : 0 }} {{ticket.client.currency}}</td>
-
-          </tr>
-          }
-        </tbody>
-      </table>
-    </c-card-body>
-  </c-card>
-</c-col>
+    <tbody>
+      <tr *ngFor="let ticket of filteredTickets">
+        <td>{{ ticket.ticketId || '-' }}</td>
+        <td>{{ ticket.client?.name || '-' }}</td>
+        <td>{{ ticket.activity?.name || '-' }}</td>
+        <td>{{ ticket.salePrice?.amount || 0 }} {{ ticket.salePrice?.currency || '' }}</td>
+        <td>{{ ticket.paymentStatus || '-' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
