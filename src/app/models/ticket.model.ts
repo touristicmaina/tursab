@@ -1,8 +1,6 @@
 export interface Ticket {
-  id: string;                // Firestore document ID
-  ticketNumber: string;      // Auto generated (0001, 0002...)
-
-  isActive: 'YES' | 'NO';    // Ticket status
+  id: string;
+  ticketNumber: string;
 
   client: {
     clientId: string;
@@ -30,7 +28,7 @@ export interface Ticket {
   };
 
   pickupPoint: string;
-  pickupTime: string; // 24h format "08:00", "20:00"
+  pickupTime: string;
 
   guide: {
     guideId: string;
@@ -38,7 +36,7 @@ export interface Ticket {
     guidePhone: string;
   };
 
-  activityDate: string; // yyyy-MM-dd
+  activityDate: string;
 
   createdBy: {
     uid: string;
