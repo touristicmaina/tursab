@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { cilTrash, cilPencil } from '@coreui/icons';
 import {RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { TicketServices } from '../../../../../services/ticket.service';
+import { TicketService } from '../../../../../services/ticket.service';
 @Component({
   selector: 'app-clientslist',
   standalone: true,
@@ -39,7 +39,7 @@ export class ClientslistComponent {
   constructor(
     private clientsServices: ClientService,
     private iconSet: IconSetService,
-    private ticketServices: TicketServices,
+    private ticketService: TicketService,
   ) {
     this.getAllClients();
     this.iconSet.icons = { cilTrash, cilPencil };
