@@ -1,41 +1,16 @@
-<h2>Client Information</h2>
+<div class="container">
+  <h3>Client Info</h3>
 
-<label>Customer Name</label>
-<input [(ngModel)]="client.name" />
+  <input placeholder="Client Name" [(ngModel)]="client.name" />
+  <input placeholder="Phone" [(ngModel)]="client.phone" />
 
-<label>Phone</label>
-<input [(ngModel)]="client.phone" type="tel" />
+  <input type="number" min="1" placeholder="PAX" [(ngModel)]="client.pax" />
 
-<label>Number of People</label>
-<input [(ngModel)]="client.pax" type="number" min="1" />
+  <input placeholder="Hotel" [(ngModel)]="client.hotel" />
 
-<label>Hotel</label>
-<input [(ngModel)]="client.hotel" />
+  <input placeholder="Guide Name" [(ngModel)]="client.guideName" />
 
-<label>Guide Name</label>
-<input [(ngModel)]="client.guideName" />
+  <input type="tel" placeholder="Guide Phone" [(ngModel)]="client.guidePhone" />
 
-<label>Guide Phone</label>
-<input [(ngModel)]="client.guidePhone" type="tel" />
-
-<label>Final Price</label>
-<div class="row">
-  <input type="number" [(ngModel)]="client.finalPrice" />
-  <select [(ngModel)]="client.currency">
-    <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
-  </select>
+  <button (click)="save()">Save</button>
 </div>
-
-<div class="paid-row">
-  <input type="checkbox" [(ngModel)]="client.paid" (change)="onPaidChange()" />
-  <span>Paid</span>
-</div>
-
-<label>Rest</label>
-<input
-  type="number"
-  [(ngModel)]="client.rest"
-  [disabled]="client.paid"
-/>
-
-<button (click)="saveClient()">Save</button>
