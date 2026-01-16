@@ -19,3 +19,7 @@ export class ClientsComponent {
   };
 
   saveClient() {
+    console.log('Client data:', this.client);
+  }
+
+}
