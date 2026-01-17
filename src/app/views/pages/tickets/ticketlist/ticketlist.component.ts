@@ -1,22 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { TicketService } from '../../../../services/ticket.service';
-import { Ticket } from '../../../../models/ticket.model';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-ticketlist',
-  templateUrl: './ticketlist.component.html',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './ticketlist.component.html'
 })
-export class TicketlistComponent implements OnInit {
+export class TicketlistComponent {
 
-  tickets: Ticket[] = [];
-  filteredTickets: Ticket[] = [];
+  filteredTickets: any[] = [];
 
-  constructor(private ticketService: TicketService) {}
-
-  ngOnInit(): void {
-    this.ticketService.getTickets().subscribe(tickets => {
-      this.tickets = tickets;
-      this.filteredTickets = tickets;
-    });
-  }
 }
