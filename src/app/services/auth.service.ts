@@ -67,17 +67,22 @@ export class AuthService {
   // ================= USER STREAM =================
   get user$(): Observable<AppUser | null> {
     return new Observable<AppUser | null>(observer => {
-      onAuthStateChanged(this.auth, (firebaseUser: FirebaseUser | null) => {
-        if (!firebaseUser) {
-          observer.next(null);
-          return;
-        }
+      const unsubscribe = onAuthStateChanged(
+        this.auth,
+        (firebaseUser: FirebaseUser | null) => {
+          if (!firebaseUser) {
+            observer.next(null);
+            return;
+          }
 
-        this.getAppUser(firebaseUser).subscribe({
-          next: user => observer.next(user),
-          error: err => observer.error(err)
-        });
-      });
+          this.getAppUser(firebaseUser).subscribe({
+            next: user => observer.next(user),
+            error: err => observer.error(err)
+          });
+        }
+      );
+
+      return { unsubscribe };
     });
   }
 
