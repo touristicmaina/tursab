@@ -1,23 +1,41 @@
-// src/app/app.component.ts
-import { Component, OnInit, inject, DestroyRef } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  inject,
+  DestroyRef
+} from '@angular/core';
+
+import {
+  RouterOutlet,
+  Router,
+  NavigationEnd,
+  ActivatedRoute
+} from '@angular/router';
+
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from './services/auth.service';
-import { Title }       from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { delay, filter, map, tap } from 'rxjs/operators';
+
+import { AuthService } from './services/auth.service';
+
 import { ColorModeService } from '@coreui/angular';
-import { IconSetService }   from '@coreui/icons-angular';
-import { iconSubset }       from './icons/icon-subset';
+import { IconSetService } from '@coreui/icons-angular';
+import { iconSubset } from './icons/icon-subset';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterOutlet
+  ],
   template: `<router-outlet></router-outlet>`
 })
 export class AppComponent implements OnInit {
+
   private destroyRef = inject(DestroyRef);
   private auth       = inject(AuthService);
   private router     = inject(Router);
@@ -29,25 +47,29 @@ export class AppComponent implements OnInit {
   title = 'Touristic Mania';
 
   constructor() {
-    // set the document title
+    // document title
     this.titleSvc.setTitle(this.title);
 
-    // CoreUI icon + theme init
+    // CoreUI icons + theme
     this.icons.icons = { ...iconSubset };
-    this.colorSvc.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');
+    this.colorSvc.localStorageItemName.set(
+      'coreui-free-angular-admin-template-theme-default'
+    );
     this.colorSvc.eventName.set('ColorSchemeChange');
   }
 
   ngOnInit(): void {
-    // 1) existing theme switch and navigation logic
+
+    // Router events
     this.router.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(evt => {
         if (evt instanceof NavigationEnd) {
-          // (you can do extra work here on each NavigationEnd)
+          // optional logic
         }
       });
 
+    // Theme via query param ?theme=dark|light|auto
     this.route.queryParams
       .pipe(
         delay(1),
@@ -58,7 +80,7 @@ export class AppComponent implements OnInit {
       )
       .subscribe();
 
-    // 2) watch login/logout and schedule expiry
+    // Watch login state
     this.auth.user$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(user => {
@@ -68,15 +90,15 @@ export class AppComponent implements OnInit {
       });
   }
 
-  /** manual logout (you can call this from a button in your layout) */
-  logout(): void {
-    this.clearSession()
-      .then(() => this.router.navigate(['/login']));
+  /** manual logout */
+  async logout(): Promise<void> {
+    await this.clearSession();
+    this.router.navigate(['/login']);
   }
 
-  /** schedule auto-logout at 1hr after login */
+  /** auto logout after 1 hour */
   private scheduleExpiry(): void {
-    const loginTime = parseInt(localStorage.getItem('loginTime') || '0', 10);
+    const loginTime = Number(localStorage.getItem('loginTime') || 0);
     const elapsed   = Date.now() - loginTime;
     const remaining = 3600_000 - elapsed;
 
@@ -87,27 +109,27 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /** sign out + clear storage/indexedDB + timestamp */
-  private expireSession(): void {
+  private async expireSession(): Promise<void> {
     alert('Session expired. Please log in again.');
-    this.clearSession()
-      .then(() => this.router.navigate(['/login']));
+    await this.clearSession();
+    this.router.navigate(['/login']);
   }
 
-  /** helper to perform sign-out and clear state */
+  /** clear auth + storage */
   private async clearSession(): Promise<void> {
-    // 1) Firebase signOut
-    await this.auth.logout().toPromise();
 
-    // 2) remove our login timestamp
+    // Firebase sign out
+    await firstValueFrom(this.auth.logout());
+
+    // clear timestamp
     localStorage.removeItem('loginTime');
 
-    // 3) clear Firebase IndexedDB persistence
-    await new Promise<void>(res => {
-      const DB_DELETE_REQUEST = window.indexedDB.deleteDatabase('firebaseLocalStorageDb');
-      DB_DELETE_REQUEST.onsuccess = () => res();
-      DB_DELETE_REQUEST.onerror   = () => res();
-      DB_DELETE_REQUEST.onblocked = () => res();
+    // clear firebase indexedDB
+    await new Promise<void>(resolve => {
+      const req = indexedDB.deleteDatabase('firebaseLocalStorageDb');
+      req.onsuccess = () => resolve();
+      req.onerror   = () => resolve();
+      req.onblocked = () => resolve();
     });
   }
 }
