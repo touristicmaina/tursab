@@ -29,4 +29,8 @@ export const routes: Routes = [
         .then(m => m.TicketsComponent),
   },
 
+  {
+    path: '**',
+    redirectTo: 'dashboard'
+  }
 ];
