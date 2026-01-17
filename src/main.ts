@@ -1,4 +1,3 @@
-// main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router';
@@ -6,12 +5,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-// Firebase
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
-// CoreUI
 import { SidebarModule, CardModule } from '@coreui/angular';
 
 import { AppComponent } from './app/app.component';
@@ -32,6 +29,4 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideAnimations()
   ]
-}).catch((err) => {
-  console.error(err);
-});
+}).catch(err => console.error(err));
