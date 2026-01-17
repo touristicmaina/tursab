@@ -1,31 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServicesListService } from '../../../../services/serviceslist.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-activitieslist',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './activitieslist.component.html',
+  imports: [
+    CommonModule,
+    RouterModule   // ⬅️ لحل routerLink
+  ],
+  templateUrl: './activitieslist.component.html'
 })
-export class ActivitieslistComponent implements OnInit {
+export class ActivitieslistComponent {
 
-  activities: any[] = [];
+  services: any[] = [];
 
-  constructor(private serviceService: ServicesListService) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.loadActivities();
-  }
-
-  loadActivities() {
-    this.serviceService.getActivities().subscribe({
-      next: (data: any[]) => {
-        this.activities = data;
-      },
-      error: (err: any) => {
-        console.error(err);
-      }
-    });
+  // ✅ هذه الدالة كانت ناقصة
+  confirmDelete(service: any): void {
+    const ok = confirm('Are you sure you want to delete this service?');
+    if (ok) {
+      console.log('Delete service:', service);
+      // لاحقاً تربطها مع السيرفس الحقيقي
+    }
   }
 }
