@@ -1,25 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { TicketService } from '../../../../services/ticket.service';
-import { Ticket } from '../../../../models/ticket.model';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-ticketview',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './ticketview.component.html'
 })
-export class TicketviewComponent implements OnInit {
+export class TicketviewComponent {
 
-  ticket?: Ticket;
+  ticket: any = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private ticketService: TicketService
-  ) {}
-
-  async ngOnInit(): Promise<void> {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.ticket = await this.ticketService.getTicketById(id) ?? undefined;
-    }
-  }
 }
