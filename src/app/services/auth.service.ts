@@ -76,13 +76,14 @@ export class AuthService {
           }
 
           this.getAppUser(firebaseUser).subscribe({
-            next: user => observer.next(user),
-            error: err => observer.error(err)
+            next: (user: AppUser) => observer.next(user),
+            error: (err: unknown) => observer.error(err)
           });
         }
       );
 
-      return { unsubscribe };
+      // ✅ الصحيح
+      return () => unsubscribe();
     });
   }
 
