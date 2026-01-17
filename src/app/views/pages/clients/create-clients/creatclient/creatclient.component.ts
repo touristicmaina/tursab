@@ -23,13 +23,21 @@ import {
 })
 export class CreatclientComponent {
 
-  // ====== REQUIRED PROPERTIES ======
+  // ===== STATUS =====
   selectedIsActive: string | null = null;
-  mode: 'create' | 'edit' = 'create';
 
-  // ====== REQUIRED METHOD ======
   selectIsActive(value: string) {
     this.selectedIsActive = value;
   }
+
+  // ===== CURRENCY =====
+  selectedCurrency: string = 'Select Currency';
+
+  selectCurrency(currency: string) {
+    this.selectedCurrency = currency;
+  }
+
+  // ===== MODE =====
+  mode: 'create' | 'edit' = 'create';
 
 }
