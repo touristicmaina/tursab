@@ -1,43 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-// CoreUI
-import {
-  ButtonModule,
-  GridModule,
-  DropdownModule
-} from '@coreui/angular';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-creatclient',
   standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './creatclient.component.html',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ButtonModule,
-    GridModule,
-    DropdownModule
-  ]
 })
-export class CreatclientComponent {
+export class CreatclientComponent implements OnInit {
 
-  // ===== STATUS =====
-  selectedIsActive: string | null = null;
+  clientForm!: FormGroup;
+  totalPax = 0;
 
-  selectIsActive(value: string) {
-    this.selectedIsActive = value;
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.clientForm = this.fb.group({
+      name: [''],
+      phone: [''],
+      pax: [0],
+    });
+
+    this.clientForm.get('pax')?.valueChanges.subscribe(value => {
+      this.totalPax = value || 0;
+    });
   }
 
-  // ===== CURRENCY =====
-  selectedCurrency: string = 'Select Currency';
-
-  selectCurrency(currency: string) {
-    this.selectedCurrency = currency;
+  onSubmit() {
+    console.log(this.clientForm.value);
   }
-
-  // ===== MODE =====
-  mode: 'create' | 'edit' = 'create';
-
 }
