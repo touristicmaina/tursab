@@ -1,103 +1,57 @@
-<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-    <button cButton class="me-md-2" color="secondary" (click)="toggleForm()">
-      {{ showForm ? 'Close Form' : 'Add Service' }}
-    </button>
-   
-  </div>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Service Name</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
+    <tbody>
+      <tr *ngFor="let service of services; let i = index">
+        <td>{{ i + 1 }}</td>
 
-  <form *ngIf="showForm" [formGroup]="activityServiceForm" (ngSubmit)="onSubmit()" class="row g-3  mb-4">
-    <c-col md="6">
-      <label cLabel for="activityName">Service Name</label>
-      <input cFormControl id="activityName" type="text" formControlName="activityName" placeholder="Name" />
-    </c-col>
-  
-    <c-col md="6">
-      <label cLabel for="activityDescription">Description</label>
-      <input cFormControl id="activityDescription" type="text" formControlName="activityDescription" placeholder="Description" />
-    </c-col>
-  
-    <c-col md="3">
-      <label cLabel for="isActive">Is Active</label>
-      <select cFormControl id="isActive" class="form-select" formControlName="isActive">
-      <option [value]="'Yes'">Yes</option>
-<option [value]="'No'">No</option>
+        <td>
+          {{ service.name || '-' }}
+        </td>
 
-      </select>
-    </c-col>
+        <td>
+          <span
+            class="badge"
+            [class.bg-success]="service.isActive === 'Yes'"
+            [class.bg-danger]="service.isActive === 'No'">
+            {{ service.isActive || 'No' }}
+          </span>
+        </td>
 
-   
-  
-    <c-col xs="12">
-      <button cButton type="submit"> {{ mode === 'edit' ? 'Update Service' : 'Add Service' }}</button>
-    </c-col>
-  </form>
-  
+        <td class="d-flex gap-2">
+          <!-- Edit -->
+          <button
+            cButton
+            color="warning"
+            size="sm"
+            [routerLink]="['/dashboard/activities-names-edit', service.id]">
+            <i class="cil-pencil"></i>
+          </button>
 
- <c-col xs="12">
-    <c-card class="mb-4">
-      <c-card-header>
-        <strong>Activities</strong> <strong> List</strong>
-  
-        <c-col md="3">
-          <input
-            cFormControl
-            [formControl]="searchControl"
-            placeholder="Search by name"
-            id="activitySearch"
-            name="activitySearch"
-          />
-        </c-col>
-      </c-card-header>
-      <c-card-body class="table-responsive">
-        <table [striped]="true" cTable>
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Income</th>
-              <th scope="col">Clients</th>
-              <th scope="col">Commision</th>
-              <th scope="col">Active</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for(service of filteredServices;track service.activityserviceId){
-            <tr>
-              <th scope="row">{{ service.activityserviceId }}</th>
-              <td>{{ service.activityName }}</td>
-              <td>{{ service.activityTotalIncome }}</td>
-              <td>{{ service.activityTotalClients }}</td>
-              <td>{{ service.activityTotalCommision }}</td>
-              <td>{{ service.isActive}}</td>
-              <td class="text-nowrap">
-                <button
-                class="btn btn-link text-danger p-0"
-                data-bs-toggle="tooltip"
-                data-bs-placement="top"
-                title="Delete"
-                (click)="confirmDelete(service)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-              
-                <button
-                  class="btn btn-link text-info p-0 ms-2"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Edit"
-                  [routerLink]="['/dashboard/activities-names-edit', service.activityserviceId]"
-  
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </c-card-body>
-    </c-card>
-  </c-col>
+          <!-- Delete -->
+          <button
+            cButton
+            color="danger"
+            size="sm"
+            (click)="confirmDelete(service)">
+            <i class="cil-trash"></i>
+          </button>
+        </td>
+      </tr>
 
+      <tr *ngIf="services.length === 0">
+        <td colspan="4" class="text-center text-muted">
+          No activities found
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
