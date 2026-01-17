@@ -1,26 +1,14 @@
-import {
-  Component,
-  OnInit,
-  inject,
-  DestroyRef
-} from '@angular/core';
-
-import {
-  RouterOutlet,
-  Router,
-  NavigationEnd,
-  ActivatedRoute
-} from '@angular/router';
-
-import { CommonModule } from '@angular/common';
-import { Title } from '@angular/platform-browser';
-
+// src/app/app.component.ts
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 import { delay, filter, map, tap } from 'rxjs/operators';
 
 import { AuthService } from './services/auth.service';
+import { AppUser } from './models/user.model';
 
+// CoreUI
 import { ColorModeService } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
@@ -28,10 +16,7 @@ import { iconSubset } from './icons/icon-subset';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet
-  ],
+  imports: [RouterOutlet],
   template: `<router-outlet></router-outlet>`
 })
 export class AppComponent implements OnInit {
@@ -47,7 +32,7 @@ export class AppComponent implements OnInit {
   title = 'Touristic Mania';
 
   constructor() {
-    // document title
+    // عنوان الصفحة
     this.titleSvc.setTitle(this.title);
 
     // CoreUI icons + theme
@@ -60,47 +45,48 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // Router events
+    // مراقبة التنقل (اختياري – جاهز للتوسعة)
     this.router.events
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(evt => {
-        if (evt instanceof NavigationEnd) {
-          // optional logic
+      .subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          // ممكن تضيف منطق إضافي هون إذا حبيت
         }
       });
 
-    // Theme via query param ?theme=dark|light|auto
+    // قراءة theme من query params
     this.route.queryParams
       .pipe(
         delay(1),
-        map(p => <string>p['theme']?.match(/^[A-Za-z0-9\s]+/)?.[0]),
-        filter(t => ['dark', 'light', 'auto'].includes(t)),
-        tap(t => this.colorSvc.colorMode.set(t)),
+        map(params => params['theme'] as string | undefined),
+        filter(theme => theme === 'dark' || theme === 'light' || theme === 'auto'),
+        tap(theme => this.colorSvc.colorMode.set(theme)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
 
-    // Watch login state
+    // مراقبة تسجيل الدخول / الخروج
     this.auth.user$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(user => {
+      .subscribe((user: AppUser | null) => {
         if (user) {
           this.scheduleExpiry();
         }
       });
   }
 
-  /** manual logout */
-  async logout(): Promise<void> {
-    await this.clearSession();
-    this.router.navigate(['/login']);
+  /** تسجيل خروج يدوي */
+  logout(): void {
+    this.clearSession().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 
-  /** auto logout after 1 hour */
+  /** جدولة انتهاء الجلسة بعد ساعة */
   private scheduleExpiry(): void {
     const loginTime = Number(localStorage.getItem('loginTime') || 0);
     const elapsed   = Date.now() - loginTime;
-    const remaining = 3600_000 - elapsed;
+    const remaining = 60 * 60 * 1000 - elapsed; // 1 ساعة
 
     if (remaining <= 0) {
       this.expireSession();
@@ -109,27 +95,28 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private async expireSession(): Promise<void> {
+  /** انتهاء الجلسة تلقائي */
+  private expireSession(): void {
     alert('Session expired. Please log in again.');
-    await this.clearSession();
-    this.router.navigate(['/login']);
+    this.clearSession().then(() => {
+      this.router.navigate(['/login']);
+    });
   }
 
-  /** clear auth + storage */
+  /** تنظيف كامل للجلسة */
   private async clearSession(): Promise<void> {
+    // Firebase logout
+    await this.auth.logout().toPromise();
 
-    // Firebase sign out
-    await firstValueFrom(this.auth.logout());
-
-    // clear timestamp
+    // حذف وقت تسجيل الدخول
     localStorage.removeItem('loginTime');
 
-    // clear firebase indexedDB
+    // حذف Firebase IndexedDB
     await new Promise<void>(resolve => {
-      const req = indexedDB.deleteDatabase('firebaseLocalStorageDb');
-      req.onsuccess = () => resolve();
-      req.onerror   = () => resolve();
-      req.onblocked = () => resolve();
+      const request = indexedDB.deleteDatabase('firebaseLocalStorageDb');
+      request.onsuccess = () => resolve();
+      request.onerror = () => resolve();
+      request.onblocked = () => resolve();
     });
   }
 }
