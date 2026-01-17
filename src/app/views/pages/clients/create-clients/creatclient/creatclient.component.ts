@@ -1,22 +1,35 @@
 import { Component } from '@angular/core';
-import { ClientsService, ClientModel } from '../../../../../services/clients.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+// CoreUI
+import {
+  ButtonModule,
+  GridModule,
+  DropdownModule
+} from '@coreui/angular';
 
 @Component({
   selector: 'app-creatclient',
-  templateUrl: './creatclient.component.html'
+  standalone: true,
+  templateUrl: './creatclient.component.html',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonModule,
+    GridModule,
+    DropdownModule
+  ]
 })
 export class CreatclientComponent {
 
-  client: ClientModel = {
-    name: '',
-    phone: '',
-    hotel: '',
-    pax: 1
-  };
+  // ====== REQUIRED PROPERTIES ======
+  selectedIsActive: string | null = null;
+  mode: 'create' | 'edit' = 'create';
 
-  constructor(private clientService: ClientsService) {}
-
-  saveClient() {
-    this.clientService.addClient(this.client);
+  // ====== REQUIRED METHOD ======
+  selectIsActive(value: string) {
+    this.selectedIsActive = value;
   }
+
 }
