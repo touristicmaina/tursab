@@ -102,4 +102,5 @@ export class AppComponent implements OnInit {
       req.onblocked = () => resolve();
     });
   }
+  
 }
