@@ -105,18 +105,17 @@ export class AppComponent implements OnInit {
 
   /** تنظيف كامل للجلسة */
   private async clearSession(): Promise<void> {
-    // Firebase logout
-    await this.auth.logout().toPromise();
+  // 1) Firebase signOut
+  await this.auth.logout();
 
-    // حذف وقت تسجيل الدخول
-    localStorage.removeItem('loginTime');
+  // 2) remove login timestamp
+  localStorage.removeItem('loginTime');
 
-    // حذف Firebase IndexedDB
-    await new Promise<void>(resolve => {
-      const request = indexedDB.deleteDatabase('firebaseLocalStorageDb');
-      request.onsuccess = () => resolve();
-      request.onerror = () => resolve();
-      request.onblocked = () => resolve();
-    });
+  // 3) clear Firebase IndexedDB persistence
+  await new Promise<void>(res => {
+    const req = indexedDB.deleteDatabase('firebaseLocalStorageDb');
+    req.onsuccess = () => res();
+    req.onerror   = () => res();
+    req.onblocked = () => res();
+  });
   }
-}
