@@ -1,4 +1,3 @@
-// src/app/app.component.ts
 import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -31,7 +30,6 @@ export class AppComponent implements OnInit {
   constructor() {
     this.titleSvc.setTitle(this.title);
 
-    // CoreUI init
     this.icons.icons = { ...iconSubset };
     this.colorSvc.localStorageItemName.set(
       'coreui-free-angular-admin-template-theme-default'
@@ -40,17 +38,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    // Navigation watcher
     this.router.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(evt => {
-        if (evt instanceof NavigationEnd) {
-          // optional logic
-        }
+        if (evt instanceof NavigationEnd) {}
       });
 
-    // Theme from query params
     this.route.queryParams
       .pipe(
         delay(1),
@@ -61,7 +54,6 @@ export class AppComponent implements OnInit {
       )
       .subscribe();
 
-    // Auth state
     this.auth.user$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(user => {
@@ -77,14 +69,12 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // ================= SESSION =================
-
   private scheduleExpiry(): void {
     const loginTime = Number(localStorage.getItem('loginTime'));
     if (!loginTime) return;
 
     const elapsed = Date.now() - loginTime;
-    const remaining = 3600_000 - elapsed;
+    const remaining = 3600000 - elapsed;
 
     if (remaining <= 0) {
       this.expireSession();
@@ -101,7 +91,6 @@ export class AppComponent implements OnInit {
   }
 
   private async clearSession(): Promise<void> {
-    // logout already returns Promise<void>
     await this.auth.logout();
 
     localStorage.removeItem('loginTime');
