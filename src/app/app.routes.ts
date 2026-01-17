@@ -2,6 +2,22 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
 
+  // الصفحة الرئيسية
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+
+  // Dashboard
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./views/dashboard/dashboard.component')
+        .then(m => m.DashboardComponent),
+  },
+
+  // Tickets list
   {
     path: 'tickets',
     loadComponent: () =>
@@ -9,6 +25,7 @@ export const routes: Routes = [
         .then(m => m.TicketsComponent),
   },
 
+  // Ticket details
   {
     path: 'tickets/:id',
     loadComponent: () =>
@@ -16,11 +33,10 @@ export const routes: Routes = [
         .then(m => m.TicketsComponent),
   },
 
+  // أي رابط غلط
   {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('./views/dashboard/dashboard.component')
-        .then(m => m.DashboardComponent),
-  },
+    path: '**',
+    redirectTo: 'dashboard'
+  }
 
 ];
