@@ -1,131 +1,104 @@
-import { Injectable } from '@angular/core';
-import {
-  Auth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  User as FirebaseUser,
-  onAuthStateChanged
-} from '@angular/fire/auth';
+// src/app/app.component.ts
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { delay, filter, map, tap } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
-import {
-  Firestore,
-  doc,
-  docData,
-  setDoc
-} from '@angular/fire/firestore';
+import { AuthService } from './services/auth.service';
 
-import { Observable, from, of, switchMap } from 'rxjs';
+// CoreUI
+import { ColorModeService } from '@coreui/angular';
+import { IconSetService } from '@coreui/icons-angular';
+import { iconSubset } from './icons/icon-subset';
 
-import { AppUser } from '../models/user.model';
-import { AuthCredentials } from '../models/auth-credentials.model';
-import { UserRole } from '../models/user-role.enum';
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  template: `<router-outlet></router-outlet>`
+})
+export class AppComponent implements OnInit {
 
-@Injectable({ providedIn: 'root' })
-export class AuthService {
+  private destroyRef = inject(DestroyRef);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private titleSvc = inject(Title);
+  private route = inject(ActivatedRoute);
+  private colorSvc = inject(ColorModeService);
+  private icons = inject(IconSetService);
 
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore
-  ) {}
+  title = 'Touristic Mania';
 
-  // ===============================
-  // REGISTER
-  // ===============================
-  register(creds: AuthCredentials): Observable<AppUser> {
-    return from(
-      createUserWithEmailAndPassword(
-        this.auth,
-        creds.email,
-        creds.password
-      )
-    ).pipe(
-      switchMap(({ user }) => {
-        const ref = doc(this.firestore, `users/${user.uid}`);
+  constructor() {
+    // Page title
+    this.titleSvc.setTitle(this.title);
 
-        return from(
-          setDoc(ref, {
-            uid: user.uid,
-            email: user.email,
-            role: UserRole.USER,
-            displayName: user.displayName ?? null,
-            photoURL: user.photoURL ?? null
-          })
-        ).pipe(
-          switchMap(() => this.getAppUser(user))
-        );
-      })
+    // CoreUI icons & theme
+    this.icons.icons = { ...iconSubset };
+    this.colorSvc.localStorageItemName.set(
+      'coreui-free-angular-admin-template-theme-default'
     );
+    this.colorSvc.eventName.set('ColorSchemeChange');
   }
 
-  // ===============================
-  // LOGIN
-  // ===============================
-  login(creds: AuthCredentials): Observable<AppUser> {
-    return from(
-      signInWithEmailAndPassword(
-        this.auth,
-        creds.email,
-        creds.password
-      )
-    ).pipe(
-      switchMap(({ user }) => {
-        localStorage.setItem('loginTime', Date.now().toString());
-        return this.getAppUser(user);
-      })
-    );
-  }
+  ngOnInit(): void {
 
-  // ===============================
-  // LOGOUT
-  // ===============================
-  logout(): Promise<void> {
-    localStorage.removeItem('loginTime');
-    return signOut(this.auth);
-  }
-
-  // ===============================
-  // CURRENT USER STREAM ✅
-  // ===============================
-  get user$(): Observable<AppUser | null> {
-    return new Observable<AppUser | null>((observer) => {
-      onAuthStateChanged(
-        this.auth,
-        (firebaseUser: FirebaseUser | null) => {
-          if (!firebaseUser) {
-            observer.next(null);
-            return;
-          }
-
-          this.getAppUser(firebaseUser).subscribe({
-            next: (user: AppUser) => observer.next(user),
-            error: (err: unknown) => observer.error(err)
-          });
+    // Listen router events
+    this.router.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          // navigation hook (optional)
         }
-      );
-    });
-  }
+      });
 
-  // ===============================
-  // MERGE FIREBASE + FIRESTORE
-  // ===============================
-  private getAppUser(
-    firebaseUser: FirebaseUser
-  ): Observable<AppUser> {
-    const ref = doc(this.firestore, `users/${firebaseUser.uid}`);
+    // Theme from query params
+    this.route.queryParams
+      .pipe(
+        delay(1),
+        map(params => params['theme']),
+        filter(theme => theme === 'dark' || theme === 'light' || theme === 'auto'),
+        tap(theme => this.colorSvc.colorMode.set(theme)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
 
-    return docData(ref).pipe(
-      switchMap((data) => {
-        if (!data) {
-          return of({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            role: UserRole.USER
-          } as AppUser);
+    // Auth state
+    this.auth.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(user => {
+        if (user) {
+          this.scheduleExpiry();
         }
-
-        return of(data as AppUser);
-      })
-    );
+      });
   }
-}
+
+  // Manual logout
+  async logout(): Promise<void> {
+    await this.clearSession();
+    await this.router.navigate(['/login']);
+  }
+
+  // Auto logout after 1 hour
+  private scheduleExpiry(): void {
+    const loginTime = Number(localStorage.getItem('loginTime') || 0);
+    const elapsed = Date.now() - loginTime;
+    const remaining = 3600_000 - elapsed;
+
+    if (remaining <= 0) {
+      this.expireSession();
+    } else {
+      setTimeout(() => this.expireSession(), remaining);
+    }
+_tri
+  }
+
+  private async expireSession(): Promise<void> {
+    alert('Session expired. Please log in again.');
+    await this.clearSession();
+    await this.router.navigate(['/login']);
+  }
+
+  // Clear auth + storage
