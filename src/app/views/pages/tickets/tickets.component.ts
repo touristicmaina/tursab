@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tickets',
-  templateUrl: './tickets.component.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './tickets.component.html'
 })
-export class TicketsComponent implements OnInit {
+export class TicketsComponent {
 
-  // ✅ هذا هو المتغير الناقص
   formValue = {
     restAmount: 0
   };
 
-  constructor() {}
-
-  ngOnInit(): void {}
 }
