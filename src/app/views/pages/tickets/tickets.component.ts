@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
-import { Ticket } from '../../../models/ticket.model';
-import { ClientsService } from '../../../services/clients.service';
-import { ServicesListService } from '../../../services/serviceslist.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-tickets',
-  templateUrl: './tickets.component.html'
+  templateUrl: './tickets.component.html',
+  styleUrls: ['./tickets.component.scss']
 })
-export class TicketsComponent {
+export class TicketsComponent implements OnInit {
 
-  ticket: Partial<Ticket> = {};
-  mode: 'add' | 'edit' = 'add';
+  // ✅ هذا هو الحل — تعريف formValue
+  formValue = {
+    restAmount: 0
+  };
 
-  constructor(
-    private clientService: ClientsService,
-    private activityService: ServicesListService
-  ) {}
+  constructor() {}
+
+  ngOnInit(): void {
+    // إذا بدك قيمة افتراضية
+    this.formValue.restAmount = 0;
+  }
+
 }
