@@ -1,19 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ClientsService } from '../../services/clients.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+// 👇 هذا الاستيراد الناقص
+import { WidgetsDropdownComponent } from '../../widgets/widgets-dropdown/widgets-dropdown.component';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    WidgetsDropdownComponent // 👈 مهم جداً
+  ],
   templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent implements OnInit {
-
-  clientsCount = 0;
-
-  constructor(private clientService: ClientsService) {}
-
-  ngOnInit(): void {
-    this.clientService.getClients().subscribe((data: any[]) => {
-      this.clientsCount = data.length;
-    });
-  }
-}
+export class DashboardComponent {}
