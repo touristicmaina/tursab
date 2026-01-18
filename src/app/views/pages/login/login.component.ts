@@ -61,7 +61,7 @@ onLogin(form: NgForm) {
     next: () => {
       console.log('Login successful');
       console.log('user login is : ', email)
-      this.router.navigate(['/dashboard/home']);
+      this.router.navigate(['/dashboard']);
     },
     error: err => {
       console.error('Login failed', err);
