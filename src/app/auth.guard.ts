@@ -1,19 +1,16 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+export const AuthGuard: CanActivateFn = () => {
   const router = inject(Router);
 
-  return auth.user$.pipe(
-    map(user => {
-      if (user) {
-        return true;
-      }
-      router.navigate(['/login']);
-      return false;
-    })
-  );
+  // مثال بسيط: تحقق من وجود توكن
+  const isLoggedIn = localStorage.getItem('token');
+
+  if (isLoggedIn) {
+    return true;
+  } else {
+    router.navigate(['/login']);
+    return false;
+  }
 };
