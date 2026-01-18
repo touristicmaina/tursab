@@ -8,6 +8,6 @@ export const environment = {
     storageBucket: "tursab-ad4c8.firebasestorage.app",
     messagingSenderId: "465347343902",
     appId: "1:465347343902:web:7074127e76b232bfc6e00f",
-    measurementId: "G-L00XVY2HXW"
+    measurementId: "GG-L00XVY2HXW"
   }
 };
