@@ -6,7 +6,7 @@ export const environment = {
     projectId: "tursab-ad4c8",
     storageBucket: "tursab-ad4c8.appspot.com",
     messagingSenderId: "465347343902",
-    appId: "1:465347343902:web:7074127e76b232bcf6ee0f",
+    appId: "1:465347343902:web:7074127e76b232bfc6e00f",
     measurementId: "G-L00XVY2HXW"
   }
 };
