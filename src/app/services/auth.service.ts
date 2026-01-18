@@ -26,7 +26,7 @@ export class AuthService {
     private firestore: Firestore
   ) {}
 
-  // ================= REGISTER =================
+  // ========== REGISTER ==========
   register(creds: AuthCredentials): Observable<AppUser> {
     return from(
       createUserWithEmailAndPassword(this.auth, creds.email, creds.password)
@@ -46,48 +46,41 @@ export class AuthService {
     );
   }
 
-  // ================= LOGIN =================
+  // ========== LOGIN ==========
   login(creds: AuthCredentials): Observable<AppUser> {
     return from(
       signInWithEmailAndPassword(this.auth, creds.email, creds.password)
     ).pipe(
       switchMap(({ user }) => {
-        localStorage.setItem('loginTime', Date.now().toString());
+        // 🔑 نخزّن علامة تسجيل الدخول
+        localStorage.setItem('loggedIn', 'true');
         return this.getAppUser(user);
       })
     );
   }
 
-  // ================= LOGOUT =================
+  // ========== LOGOUT ==========
   logout(): Promise<void> {
-    localStorage.removeItem('loginTime');
+    localStorage.removeItem('loggedIn');
     return signOut(this.auth);
   }
 
-  // ================= USER STREAM =================
+  // ========== USER STREAM ==========
   get user$(): Observable<AppUser | null> {
-    return new Observable<AppUser | null>(observer => {
-      const unsubscribe = onAuthStateChanged(
-        this.auth,
-        (firebaseUser: FirebaseUser | null) => {
-          if (!firebaseUser) {
-            observer.next(null);
-            return;
-          }
-
-          this.getAppUser(firebaseUser).subscribe({
-            next: (user: AppUser) => observer.next(user),
-            error: (err: unknown) => observer.error(err)
-          });
+    return new Observable(observer => {
+      const unsub = onAuthStateChanged(this.auth, user => {
+        if (!user) {
+          observer.next(null);
+          return;
         }
-      );
+        this.getAppUser(user).subscribe(u => observer.next(u));
+      });
 
-      // ✅ الصحيح
-      return () => unsubscribe();
+      return () => unsub();
     });
   }
 
-  // ================= INTERNAL =================
+  // ========== INTERNAL ==========
   private getAppUser(firebaseUser: FirebaseUser): Observable<AppUser> {
     const ref = doc(this.firestore, `users/${firebaseUser.uid}`);
     return docData(ref).pipe(
