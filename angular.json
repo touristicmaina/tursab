@@ -26,6 +26,7 @@
             "outputPath": "dist/tursab",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "prerender": false
             "polyfills": [
               "@angular/localize/init",
               "zone.js"
