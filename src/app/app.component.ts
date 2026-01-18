@@ -1,13 +1,10 @@
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideFirebaseApp(() => initializeApp(environment.firebase))
-  ]
-};
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
+  template: `<router-outlet></router-outlet>`
+})
+export class AppComponent {}
