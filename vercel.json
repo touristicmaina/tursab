@@ -1,11 +1,7 @@
 {
-  "framework": "angular",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/tursab/browser",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "outputDirectory": "dist/tursab/browser/browser",
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
