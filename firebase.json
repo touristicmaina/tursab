@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/tursab",
+    "public": "dist/tursab/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
