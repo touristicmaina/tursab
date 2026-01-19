@@ -1,52 +1,30 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './guards/auth.guard';
+
+import { LoginComponent } from './auth/login.component';
+import { LayoutComponent } from './layout/layout.component';
+
+import { DashboardComponent } from './pages/dashboard.component';
+import { AddClientComponent } from './pages/add-client.component';
+import { ClientsListComponent } from './pages/clients-list.component';
+import { ServicesComponent } from './pages/services.component';
+import { AddTicketComponent } from './pages/add-ticket.component';
+import { TicketsComponent } from './pages/tickets.component';
 
 export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
 
-  // 🔹 الصفحة الرئيسية → لوج إن
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-
-  // 🔹 لوج إن
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./views/pages/login/login.component')
-        .then(m => m.LoginComponent),
-  },
-
-  // 🔹 داشبورد (محمي)
-  {
-    path: 'dashboard',
+    component: LayoutComponent,
     canActivate: [AuthGuard],
-    loadComponent: () =>
-      import('./views/dashboard/dashboard.component')
-        .then(m => m.DashboardComponent),
-  },
-
-  // 🔹 تيكتس (محمي)
-  {
-    path: 'tickets',
-    canActivate: [AuthGuard],
-    loadComponent: () =>
-      import('./views/pages/tickets/tickets.component')
-        .then(m => m.TicketsComponent),
-  },
-
-  {
-    path: 'tickets/:id',
-    canActivate: [AuthGuard],
-    loadComponent: () =>
-      import('./views/pages/tickets/tickets.component')
-        .then(m => m.TicketsComponent),
-  },
-
-  // 🔹 أي رابط غلط
-  {
-    path: '**',
-    redirectTo: 'login'
+    children: [
+      { path: '', component: DashboardComponent },
+      { path: 'add-client', component: AddClientComponent },
+      { path: 'clients', component: ClientsListComponent },
+      { path: 'services', component: ServicesComponent },
+      { path: 'add-ticket', component: AddTicketComponent },
+      { path: 'tickets', component: TicketsComponent }
+    ]
   }
 ];
