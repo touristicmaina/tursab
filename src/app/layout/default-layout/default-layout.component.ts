@@ -27,7 +27,7 @@ function isOverflown(element: HTMLElement) {
 }
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-default-layout',
   templateUrl: './default-layout.component.html',
   styleUrls: ['./default-layout.component.scss'],
   imports: [
