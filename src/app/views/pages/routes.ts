@@ -1,9 +1,19 @@
 import { Routes } from '@angular/router';
-import { TicketsComponent } from './tickets/tickets.component';
 
-export const routes: Routes = [
+export const pagesRoutes: Routes = [
+  {
+    path: 'clients',
+    loadComponent: () =>
+      import('./clients/clients.component').then(m => m.ClientsComponent),
+  },
   {
     path: 'tickets',
-    component: TicketsComponent
-  }
+    loadComponent: () =>
+      import('./tickets/tickets.component').then(m => m.TicketsComponent),
+  },
+  {
+    path: 'activities',
+    loadComponent: () =>
+      import('./activities/activities.component').then(m => m.ActivitiesComponent),
+  },
 ];
