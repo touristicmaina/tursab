@@ -3,7 +3,6 @@ export interface Client {
   clientId: string; 
   name: string;
     phone?: string;
-    email?: string;
     hotel: string;
     roomNumber: number;
     pax: {
@@ -13,14 +12,13 @@ export interface Client {
       total: number; // auto calculated
     };
     deposit: number;
-    currency: 'USD' | 'Euro';
+    currency: '$' | '€';
     guideUid: string; // from logged-in user
     guidePhone: string; // from user DB
     guideName: string; // from user DB
     createdBy: {
       uid: string;
       name: string;
-      email: string;
     };
     createdAt: Date;
     isActive: 'Yes' | 'No'; 
