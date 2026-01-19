@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
+
 import { NgScrollbar } from 'ngx-scrollbar';
 
-import { IconDirective } from '@coreui/icons-angular';
 import {
   ContainerComponent,
   ShadowOnScrollDirective,
@@ -15,23 +16,20 @@ import {
   SidebarTogglerDirective
 } from '@coreui/angular';
 
-import { DefaultFooterComponent, DefaultHeaderComponent } from './';
+import { DefaultFooterComponent } from './default-footer.component';
+import { DefaultHeaderComponent } from './default-header.component';
 import { navItems } from './_nav';
-import { CommonModule } from '@angular/common';
-
-function isOverflown(element: HTMLElement) {
-  return (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-  );
-}
 
 @Component({
   selector: 'app-default-layout',
+  standalone: true, // ✅ مهم جداً
   templateUrl: './default-layout.component.html',
   styleUrls: ['./default-layout.component.scss'],
   imports: [
     CommonModule,
+    RouterOutlet,
+    RouterLink,
+
     SidebarComponent,
     SidebarHeaderComponent,
     SidebarBrandComponent,
@@ -39,13 +37,13 @@ function isOverflown(element: HTMLElement) {
     SidebarFooterComponent,
     SidebarToggleDirective,
     SidebarTogglerDirective,
+
     ContainerComponent,
-    DefaultFooterComponent,
-    DefaultHeaderComponent,
+    ShadowOnScrollDirective,
     NgScrollbar,
-    RouterOutlet,
-    RouterLink,
-    ShadowOnScrollDirective
+
+    DefaultHeaderComponent,
+    DefaultFooterComponent
   ]
 })
 export class DefaultLayoutComponent {
