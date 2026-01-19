@@ -1,28 +1,29 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
 
-import { NgScrollbar } from 'ngx-scrollbar';
-
+// CoreUI components
 import {
+  SidebarComponent,
+  SidebarHeaderComponent,
+  SidebarBrandComponent,
+  SidebarNavComponent,
+  SidebarFooterComponent,
+  SidebarToggleDirective,
+  SidebarTogglerDirective,
   ContainerComponent,
   ShadowOnScrollDirective,
-  SidebarBrandComponent,
-  SidebarComponent,
-  SidebarFooterComponent,
-  SidebarHeaderComponent,
-  SidebarNavComponent,
-  SidebarToggleDirective,
-  SidebarTogglerDirective
 } from '@coreui/angular';
 
-import { DefaultFooterComponent } from './default-footer.component';
+// ✅ استيراد صحيح للـ scrollbar
+import { NgScrollbarModule } from 'ngx-scrollbar';
+
+// Header
 import { DefaultHeaderComponent } from './default-header.component';
-import { navItems } from './_nav';
 
 @Component({
   selector: 'app-default-layout',
-  standalone: true, // ✅ مهم جداً
+  standalone: true,
   templateUrl: './default-layout.component.html',
   styleUrls: ['./default-layout.component.scss'],
   imports: [
@@ -30,6 +31,7 @@ import { navItems } from './_nav';
     RouterOutlet,
     RouterLink,
 
+    // CoreUI
     SidebarComponent,
     SidebarHeaderComponent,
     SidebarBrandComponent,
@@ -37,15 +39,14 @@ import { navItems } from './_nav';
     SidebarFooterComponent,
     SidebarToggleDirective,
     SidebarTogglerDirective,
-
     ContainerComponent,
     ShadowOnScrollDirective,
-    NgScrollbar,
 
+    // Header
     DefaultHeaderComponent,
-    DefaultFooterComponent
-  ]
+
+    // ✅ module فقط
+    NgScrollbarModule,
+  ],
 })
-export class DefaultLayoutComponent {
-  public navItems = [...navItems];
-}
+export class DefaultLayoutComponent {}
