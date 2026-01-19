@@ -1,22 +1,16 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './auth.guard';
 
-import { LoginComponent } from './auth/login.component';
-import { DefaultLayoutComponent } from './layout/default-layout.component';
+import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component';
 
-import { DashboardComponent } from './pages/dashboard.component';
-import { AddClientComponent } from './pages/add-client.component';
-import { ClientsListComponent } from './pages/clients-list.component';
-import { ServicesComponent } from './pages/services.component';
-import { AddTicketComponent } from './pages/add-ticket.component';
-import { TicketsComponent } from './pages/tickets.component';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { AddClientComponent } from './views/pages/add-client/add-client.component';
+import { ClientsListComponent } from './views/pages/clients-list/clients-list.component';
+import { ServicesComponent } from './views/pages/services/services.component';
+import { AddTicketComponent } from './views/pages/add-ticket/add-ticket.component';
+import { TicketsComponent } from './views/pages/tickets/tickets.component';
 
 export const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent
-  },
-
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -29,10 +23,5 @@ export const routes: Routes = [
       { path: 'add-ticket', component: AddTicketComponent },
       { path: 'tickets', component: TicketsComponent }
     ]
-  },
-
-  {
-    path: '**',
-    redirectTo: ''
   }
 ];
