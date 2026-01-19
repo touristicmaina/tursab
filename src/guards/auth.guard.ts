@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
 
-export const AuthGuard: CanActivateFn = () => {
-  const auth = inject(Auth);
+export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
-  if (auth.currentUser) {
+  const loginTime = localStorage.getItem('loginTime');
+
+  if (loginTime) {
     return true;
   }
 
