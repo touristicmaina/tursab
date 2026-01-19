@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 
+// Layout
 import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component';
 
+// Pages
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { AddClientComponent } from './views/pages/add-client/add-client.component';
 import { ClientsListComponent } from './views/pages/clients-list/clients-list.component';
