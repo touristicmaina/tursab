@@ -1,57 +1,51 @@
 import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
+
   {
     name: 'Dashboard',
-    url: '/dashboard/home',
-    iconComponent: { name: 'cil-speedometer' },
-    
-
+    url: '/',
+    iconComponent: { name: 'cil-speedometer' }
   },
+
   {
     title: true,
-    name: 'clients'
+    name: 'Clients'
   },
   {
-    name: 'create client',
-    url: '/dashboard/clients/create-client',
-    iconComponent: { name: 'cil-user-follow' }
+    name: 'Add Client',
+    url: '/add-client',
+    iconComponent: { name: 'cil-user-plus' }
   },
   {
     name: 'Clients List',
-    url: '/dashboard/clients/clients-list',
-    iconComponent: { name: 'cil-list' }
+    url: '/clients',
+    iconComponent: { name: 'cil-people' }
   },
+
   {
     title: true,
-    name: 'Activities'
+    name: 'Services'
   },
- 
- 
   {
-  
     name: 'Services',
-    url: '/dashboard/activities-names',
-    iconComponent: { name: 'cil-puzzle' }
+    url: '/services',
+    iconComponent: { name: 'cil-layers' }
   },
 
   {
     title: true,
     name: 'Tickets'
   },
-
   {
-  
     name: 'Add Ticket',
-    url: '/dashboard/tickets',
-    iconComponent: { name: 'cil-pencil' }
+    url: '/add-ticket',
+    iconComponent: { name: 'cil-plus' }
   },
-
   {
-  
     name: 'Tickets',
-    url: '/dashboard/tickets-list',
+    url: '/tickets',
     iconComponent: { name: 'cil-notes' }
-  },
+  }
 
 ];
