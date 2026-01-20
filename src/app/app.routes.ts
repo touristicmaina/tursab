@@ -1,26 +1,38 @@
 import { Routes } from '@angular/router';
 
+// =========================
 // Auth
-import { LoginComponent } from './view/pages/login/login.component';
-import { RegisterComponent } from './view/pages/register/register.component';
-import { ResetPasswordComponent } from './view/pages/reset-password/rest-password.component';
+// =========================
+import { LoginComponent } from './views/pages/login/login.component';
+import { RegisterComponent } from './views/pages/register/register.component';
+import { ResetPasswordComponent } from './views/pages/reset-password/reset-password.component';
 
-// Pages
-import { ActivitiesComponent } from './view/pages/activities/activities.component';
-import { ActivitiesListComponent } from './view/pages/activities/activitieslist/activitieslist.component';
-import { ActivityAnalysisComponent } from './view/pages/activities/activityanalysis/activityanalysis.component';
+// =========================
+// Activities
+// =========================
+import { ActivitiesComponent } from './views/pages/activities/activities.component';
+import { ActivitiesListComponent } from './views/pages/activities/activities-list/activities-list.component';
+import { ActivityAnalysisComponent } from './views/pages/activities/activity-analysis/activity-analysis.component';
 
-import { ClientsComponent } from './view/pages/clients/clients.component';
-import { ClientsListComponent } from './view/pages/clients/clients-lists/clientslist/clientslist.component';
-import { CreateClientComponent } from './view/pages/clients/create-clients/createclient/createclient.component';
+// =========================
+// Clients
+// =========================
+import { ClientsComponent } from './views/pages/clients/clients.component';
+import { ClientsListComponent } from './views/pages/clients/clients-list/clients-list.component';
+import { CreateClientComponent } from './views/pages/clients/create-client/create-client.component';
 
-import { TicketsComponent } from './view/pages/tickets/tickets.component';
-import { TicketListComponent } from './view/pages/tickets/ticketlist/ticketlist.component';
-import { TicketViewComponent } from './view/pages/tickets/ticketview/ticketview.component';
+// =========================
+// Tickets
+// =========================
+import { TicketsComponent } from './views/pages/tickets/tickets.component';
+import { TicketListComponent } from './views/pages/tickets/ticket-list/ticket-list.component';
+import { TicketViewComponent } from './views/pages/tickets/ticket-view/ticket-view.component';
 
+// =========================
 // Errors
-import { Page404Component } from './view/pages/page404/page404.component';
-import { Page500Component } from './view/pages/page500/page500.component';
+// =========================
+import { Page404Component } from './views/pages/page404/page404.component';
+import { Page500Component } from './views/pages/page500/page500.component';
 
 export const routes: Routes = [
 
