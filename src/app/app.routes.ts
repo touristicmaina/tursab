@@ -15,9 +15,11 @@ import { ActivitieslistComponent } from './views/pages/activities/activitieslist
 import { ActivityanalysisComponent } from './views/pages/activities/activityanalysis/activityanalysis.component';
 
 /* Clients */
+import { ClientsComponent } from './views/pages/clients/clients.component';
 import { ClientslistComponent } from './views/pages/clients/clients-lists/clientslist/clientslist.component';
 
 /* Tickets */
+import { TicketsComponent } from './views/pages/tickets/tickets.component';
 import { TicketlistComponent } from './views/pages/tickets/ticketlist/ticketlist.component';
 import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview.component';
 
@@ -41,11 +43,25 @@ export const routes: Routes = [
   },
 
   /* Clients */
-  { path: 'clients/list', component: ClientslistComponent },
+  {
+    path: 'clients',
+    component: ClientsComponent,
+    children: [
+      { path: 'list', component: ClientslistComponent },
+      { path: '', redirectTo: 'list', pathMatch: 'full' }
+    ]
+  },
 
   /* Tickets */
-  { path: 'tickets/list', component: TicketlistComponent },
-  { path: 'tickets/view', component: TicketviewComponent },
+  {
+    path: 'tickets',
+    component: TicketsComponent,
+    children: [
+      { path: 'list', component: TicketlistComponent },
+      { path: 'view', component: TicketviewComponent },
+      { path: '', redirectTo: 'list', pathMatch: 'full' }
+    ]
+  },
 
   /* Errors */
   { path: '500', component: Page500Component },
