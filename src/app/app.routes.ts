@@ -45,4 +45,15 @@ export const routes: Routes = [
   { path: '500', component: Page500Component },
   { path: '404', component: Page404Component },
   { path: '**', redirectTo: '404' }
+];    ]
+  },
+
+  { path: 'clients/list', component: ClientslistComponent },
+
+  { path: 'tickets/list', component: TicketlistComponent },
+  { path: 'tickets/view', component: TicketviewComponent },
+
+  { path: '500', component: Page500Component },
+  { path: '404', component: Page404Component },
+  { path: '**', redirectTo: '404' }
 ];
