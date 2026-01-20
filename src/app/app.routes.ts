@@ -5,7 +5,7 @@ import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
 import { ResetPasswordComponent } from './views/pages/reset-password/reset-password.component';
 
-/* Errors */
+/* Pages */
 import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 
@@ -14,7 +14,6 @@ import { ActivitieslistComponent } from './views/pages/activities/activitieslist
 import { ActivityanalysisComponent } from './views/pages/activities/activityanalysis/activityanalysis.component';
 
 /* Clients */
-import { ClientsComponent } from './views/pages/clients/clients.component';
 import { ClientslistComponent } from './views/pages/clients/clients-lists/clientslist/clientslist.component';
 
 /* Tickets */
@@ -22,7 +21,6 @@ import { TicketlistComponent } from './views/pages/tickets/ticketlist/ticketlist
 import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview.component';
 
 export const routes: Routes = [
-
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   /* Auth */
@@ -35,7 +33,6 @@ export const routes: Routes = [
   { path: 'activities/analysis', component: ActivityanalysisComponent },
 
   /* Clients */
-  { path: 'clients', component: ClientsComponent },
   { path: 'clients/list', component: ClientslistComponent },
 
   /* Tickets */
