@@ -24,31 +24,6 @@ import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
-
-  {
-    path: 'activities',
-    component: ActivitiesComponent,
-    children: [
-      { path: 'list', component: ActivitieslistComponent },
-      { path: 'analysis', component: ActivityanalysisComponent }
-    ]
-  },
-
-  { path: 'clients/list', component: ClientslistComponent },
-
-  { path: 'tickets/list', component: TicketlistComponent },
-  { path: 'tickets/view', component: TicketviewComponent },
-
-  { path: '500', component: Page500Component },
-  { path: '404', component: Page404Component },
-  { path: '**', redirectTo: '404' }
-];======================= */
-export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-
   /* Auth */
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
