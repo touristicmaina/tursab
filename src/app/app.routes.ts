@@ -5,7 +5,7 @@ import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
 import { ResetPasswordComponent } from './views/pages/reset-password/reset-password.component';
 
-/* Pages */
+/* Errors */
 import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 
@@ -22,6 +22,7 @@ import { TicketlistComponent } from './views/pages/tickets/ticketlist/ticketlist
 import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview.component';
 
 export const routes: Routes = [
+
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   /* Auth */
