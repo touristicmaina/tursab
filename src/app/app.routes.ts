@@ -24,10 +24,12 @@ import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
+  /* Auth */
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
+  /* Activities */
   {
     path: 'activities',
     component: ActivitiesComponent,
@@ -37,11 +39,14 @@ export const routes: Routes = [
     ]
   },
 
+  /* Clients */
   { path: 'clients/list', component: ClientslistComponent },
 
+  /* Tickets */
   { path: 'tickets/list', component: TicketlistComponent },
   { path: 'tickets/view', component: TicketviewComponent },
 
+  /* Errors */
   { path: '500', component: Page500Component },
   { path: '404', component: Page404Component },
   { path: '**', redirectTo: '404' }
