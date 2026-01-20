@@ -11,37 +11,42 @@ import { Page500Component } from './views/pages/page500/page500.component';
 
 /* Activities */
 import { ActivitiesComponent } from './views/pages/activities/activities/activities.component';
-import { ActivitiesListComponent } from './views/pages/activities/activities-list/activities-list.component';
-import { ActivityAnalysisComponent } from './views/pages/activities/activity-analysis/activity-analysis.component';
+import { ActivitieslistComponent } from './views/pages/activities/activitieslist/activitieslist.component';
+import { ActivityanalysisComponent } from './views/pages/activities/activityanalysis/activityanalysis.component';
 
 /* Clients */
-import { ClientsListComponent } from './views/pages/clients/clients-list/clients-list.component';
+import { ClientslistComponent } from './views/pages/clients/clients-lists/clientslist/clientslist.component';
 
 /* Tickets */
-import { TicketsListComponent } from './views/pages/tickets/tickets-list/tickets-list.component';
-import { TicketViewComponent } from './views/pages/tickets/ticket-view/ticket-view.component';
+import { TicketlistComponent } from './views/pages/tickets/ticketlist/ticketlist.component';
+import { TicketviewComponent } from './views/pages/tickets/ticketview/ticketview.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
+  /* Auth */
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
+  /* Activities */
   {
     path: 'activities',
     component: ActivitiesComponent,
     children: [
-      { path: 'list', component: ActivitiesListComponent },
-      { path: 'analysis', component: ActivityAnalysisComponent }
+      { path: 'list', component: ActivitieslistComponent },
+      { path: 'analysis', component: ActivityanalysisComponent }
     ]
   },
 
-  { path: 'clients/list', component: ClientsListComponent },
+  /* Clients */
+  { path: 'clients/list', component: ClientslistComponent },
 
-  { path: 'tickets/list', component: TicketsListComponent },
-  { path: 'tickets/view', component: TicketViewComponent },
+  /* Tickets */
+  { path: 'tickets/list', component: TicketlistComponent },
+  { path: 'tickets/view', component: TicketviewComponent },
 
+  /* Errors */
   { path: '500', component: Page500Component },
   { path: '404', component: Page404Component },
   { path: '**', redirectTo: '404' }
