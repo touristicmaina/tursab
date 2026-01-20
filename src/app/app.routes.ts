@@ -10,6 +10,7 @@ import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 
 /* Activities */
+import { ActivitiesComponent } from './views/pages/activities/activities/activities.component';
 import { ActivitieslistComponent } from './views/pages/activities/activitieslist/activitieslist.component';
 import { ActivityanalysisComponent } from './views/pages/activities/activityanalysis/activityanalysis.component';
 
@@ -27,8 +28,14 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
-  { path: 'activities/list', component: ActivitieslistComponent },
-  { path: 'activities/analysis', component: ActivityanalysisComponent },
+  {
+    path: 'activities',
+    component: ActivitiesComponent,
+    children: [
+      { path: 'list', component: ActivitieslistComponent },
+      { path: 'analysis', component: ActivityanalysisComponent }
+    ]
+  },
 
   { path: 'clients/list', component: ClientslistComponent },
 
